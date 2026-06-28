@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "framework": "vite",
+
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+
+  "outputDirectory": "dist/spa",
+
+  "rewrites": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

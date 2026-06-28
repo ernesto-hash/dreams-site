@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm \"c:/Users/ernes/OneDrive/Ambiente de Trabalho/dreams-site-main/client/lib/stripe.ts\")",
+      "Bash(rm \"c:/Users/ernes/OneDrive/Ambiente de Trabalho/dreams-site-main/client/components/ui/CheckoutForm.tsx\")",
+      "Bash(rm \"c:/Users/ernes/OneDrive/Ambiente de Trabalho/dreams-site-main/client/pages/Checkout.tsx\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); const deps={...p.dependencies,...p.devDependencies}; console.log\\(deps['@netlify/functions'] || 'not found'\\)\")"
+    ]
+  }
+}

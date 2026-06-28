@@ -1,0 +1,146 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme for Digital Monument of Dreams
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 260 20% 8%;
+    --foreground: 0 0% 100%;
+
+    --card: 260 20% 11%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 260 20% 11%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 263 85% 61%;
+    --primary-foreground: 260 20% 8%;
+
+    --secondary: 263 100% 82%;
+    --secondary-foreground: 260 20% 8%;
+
+    --muted: 260 20% 25%;
+    --muted-foreground: 0 0% 82%;
+
+    --accent: 263 85% 61%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 260 20% 20%;
+    --input: 260 20% 7%;
+    --ring: 263 85% 61%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 260 20% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 263 85% 61%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 260 20% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 260 20% 15%;
+    --sidebar-ring: 263 85% 61%;
+  }
+
+  .dark {
+    --background: 260 20% 8%;
+    --foreground: 0 0% 100%;
+
+    --card: 260 20% 11%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 260 20% 11%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 263 85% 61%;
+    --primary-foreground: 260 20% 8%;
+
+    --secondary: 263 100% 82%;
+    --secondary-foreground: 260 20% 8%;
+
+    --muted: 260 20% 25%;
+    --muted-foreground: 0 0% 82%;
+
+    --accent: 263 85% 61%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 260 20% 20%;
+    --input: 260 20% 7%;
+    --ring: 263 85% 61%;
+
+    --sidebar-background: 260 20% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 263 85% 61%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 260 20% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 260 20% 15%;
+    --sidebar-ring: 263 85% 61%;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-white;
+    background: linear-gradient(135deg, #0F0F1F 0%, #1A1A2E 100%);
+    font-family: "Exo 2", sans-serif;
+  }
+
+  :where(p, span, li, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  .neon-glow {
+    @apply shadow-glow-neon;
+  }
+
+  .neon-button {
+    @apply bg-neon-primary text-white px-6 py-3 rounded-xl font-exo2 font-semibold transition-all duration-300 hover:shadow-glow-neon border border-neon-primary;
+  }
+
+  .neon-button:hover {
+    @apply scale-105;
+  }
+
+  .card-dark {
+    @apply bg-dark-card/85 border border-neon-primary/30 backdrop-blur-sm;
+  }
+
+  .input-dark {
+    @apply bg-dark-input border border-neon-primary/30 text-white placeholder-gray-400 focus:outline-none focus:border-neon-primary focus:ring-1 focus:ring-neon-primary/50;
+  }
+}
