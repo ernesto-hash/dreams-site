@@ -30,7 +30,6 @@ export default function Privacy() {
                 <li>Dream content (text submitted)</li>
                 <li>Browsing data (cookies, analytics)</li>
               </ul>
-              <p className="mt-2">Note: We do not store financial or banking data — payments are securely processed through Stripe.</p>
             </section>
 
             <section>
@@ -39,7 +38,6 @@ export default function Privacy() {
               <ul className="list-disc list-inside mt-2">
                 <li>Create and manage user accounts</li>
                 <li>Allow dream submissions</li>
-                <li>Process payments via Stripe</li>
                 <li>Enhance the user experience on the site</li>
                 <li>Send notifications and information (if authorized)</li>
               </ul>
@@ -47,7 +45,7 @@ export default function Privacy() {
 
             <section>
               <h2 className="text-2xl font-bold text-neon-primary mb-3">3. Sharing of Information</h2>
-              <p>We do not sell or share your data with third parties, except when necessary to process payments or required by law.</p>
+              <p>We do not sell or share your data with third parties, except when required by law.</p>
             </section>
 
             <section>

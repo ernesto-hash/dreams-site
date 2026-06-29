@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 const NotFound = () => {
   const location = useLocation();
@@ -16,6 +17,11 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-gradient-dark flex flex-col">
+      <Seo
+        title="Page Not Found — Monument of Dreams"
+        description="The page you are looking for does not exist."
+        canonical="https://monumentofdreams.com/404"
+      />
       <Header />
 
       <main className="flex-1 flex items-center justify-center px-4 sm:px-8 pt-20">

@@ -110,7 +110,7 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
                 { num: "1", title: "Write Your Dream", desc: "Articulate your deepest wish or aspiration" },
-                { num: "2", title: "Payment", desc: "Secure payment of $1 USD protects against spam" },
+                { num: "2", title: "Submit Free", desc: "Submit your dream for free — no payment required" },
                 { num: "3", title: "Share with World", desc: "Your dream becomes public and visible in the gallery" },
                 { num: "4", title: "Inspire Others", desc: "Your wish may inspire others to chase their dreams" },
               ].map((step, idx) => (
@@ -126,36 +126,6 @@ export default function About() {
                   </p>
                 </div>
               ))}
-            </div>
-          </section>
-
-          {/* Why $1 */}
-          <section className="mb-16">
-            <div className="card-dark p-8 rounded-lg">
-              <h2 className="font-orbitron text-2xl font-bold text-neon-primary mb-4">
-                Why $1 per wish?
-              </h2>
-
-              <p className="text-neon-secondary font-exo2 leading-relaxed mb-4">
-                The $1 submission fee serves multiple important purposes:
-              </p>
-
-              <ul className="space-y-3 font-exo2 text-neon-secondary/80">
-                <li className="flex gap-2">
-                  <span className="text-neon-primary">•</span>
-                  <span><strong className="text-neon-primary">Prevents spam:</strong> Ensures only serious dreamers submit wishes</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <span className="text-neon-primary">•</span>
-                  <span><strong className="text-neon-primary">Sustainable platform:</strong> Helps maintain and improve the monument</span>
-                </li>
-
-                <li className="flex gap-2">
-                  <span className="text-neon-primary">•</span>
-                  <span><strong className="text-neon-primary">Symbolic value:</strong> Your wish costs something, making it more meaningful</span>
-                </li>
-              </ul>
             </div>
           </section>
 

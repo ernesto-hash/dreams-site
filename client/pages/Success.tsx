@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 
 export default function Success() {
   const [searchParams] = useSearchParams();
@@ -11,6 +12,11 @@ export default function Success() {
 
   return (
     <div className="min-h-screen bg-gradient-dark">
+      <Seo
+        title="Dream Submitted — Monument of Dreams"
+        description="Your dream has been published and is now part of the Monument of Dreams."
+        canonical="https://monumentofdreams.com/success"
+      />
       <Header />
 
       <main className="pt-32 pb-20 px-4">

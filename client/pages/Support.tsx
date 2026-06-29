@@ -22,7 +22,7 @@ export default function Support() {
             <div className="bg-dark-card/50 p-6 rounded-lg">
               <h2 className="text-xl font-bold text-neon-primary mb-4">Technical Issues</h2>
               <p className="text-neon-secondary mb-4">
-                Having trouble with payments or submission?
+                Having trouble with your submission?
               </p>
               <ul className="space-y-2 text-neon-secondary">
                 <li>• Clear your browser cache</li>
@@ -33,9 +33,9 @@ export default function Support() {
             </div>
             
             <div className="bg-dark-card/50 p-6 rounded-lg">
-              <h2 className="text-xl font-bold text-neon-primary mb-4">Payment Support</h2>
+              <h2 className="text-xl font-bold text-neon-primary mb-4">General Support</h2>
               <p className="text-neon-secondary">
-                For payment-related issues, please contact Stripe support.
+                For any other questions or feedback, email us at dreamsmonument@gmail.com.
               </p>
             </div>
           </div>

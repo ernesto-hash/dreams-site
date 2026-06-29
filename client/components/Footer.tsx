@@ -66,7 +66,6 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-neon-primary/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neon-secondary/50">
           <p>© 2026 Digital Monument of Dreams. All rights reserved.</p>
-          {/* <p>🔒 Payments secured by Stripe · Your wishes, your privacy</p> */}
         </div>
       </div>
     </footer>

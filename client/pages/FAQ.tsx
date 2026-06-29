@@ -6,7 +6,7 @@ export default function FAQ() {
   const faqs = [
     {
       question: "How much does it cost to submit a dream?",
-      answer: "There's a $1 optional contribution to support the platform. You can also submit for free."
+      answer: "Submitting a dream is completely free."
     },
     {
       question: "Are my dreams anonymous?",

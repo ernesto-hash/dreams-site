@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 import { supabase } from "@/lib/supabase";
 
 export default function DreamPage() {
@@ -121,6 +122,11 @@ export default function DreamPage() {
 
   return (
     <div className="min-h-screen bg-gradient-dark">
+      <Seo
+        title={`${dream.title} — Monument of Dreams`}
+        description={dream.description?.slice(0, 160) || "A dream shared on Monument of Dreams."}
+        canonical={`https://monumentofdreams.com/dream/${dream.id}`}
+      />
       <Header />
 
       <main className="pt-32 pb-20 px-4 sm:px-8 max-w-4xl mx-auto">

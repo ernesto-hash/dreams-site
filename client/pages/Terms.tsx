@@ -26,11 +26,6 @@ export default function Terms() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-neon-primary mb-3">2. Payments</h2>
-              <p>Each dream submission costs <strong>$1</strong>. Payments are processed through Stripe, and the site does not store banking information. Refunds are only issued in case of verified payment errors.</p>
-            </section>
-
-            <section>
               <h2 className="text-2xl font-bold text-neon-primary mb-3">3. Intellectual Property</h2>
               <p>Users retain rights to their dreams. By submitting, you grant Dreams a non-exclusive license to display your content on the site and for internal promotions.</p>
             </section>
