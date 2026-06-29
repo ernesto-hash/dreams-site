@@ -77,13 +77,13 @@ export default function DreamMeanings() {
               </p>
               <div className="mt-8 pt-6 border-t border-neon-primary/20">
                 <p className="text-neon-secondary/70 text-sm mb-3">
-                  Have you experienced this type of dream? Share it with the world for just $1 and let thousands of people read it.
+                  Have you experienced this type of dream? Share it with the world and let thousands of people read it.
                 </p>
                 <Link
                   to="/submit"
                   className="neon-button inline-block px-6 py-2 text-sm"
                 >
-                  Share your dream about {section.id.replace(/-/g, " ")} — $1
+                  Share your dream about {section.id.replace(/-/g, " ")}
                 </Link>
               </div>
             </article>
@@ -98,7 +98,7 @@ export default function DreamMeanings() {
             Join thousands of people worldwide who have preserved their dreams forever on Monument of Dreams. Every dream matters.
           </p>
           <Link to="/submit" className="neon-button px-8 py-3 text-base">
-            Submit My Dream — Starting at $1
+            Submit My Dream
           </Link>
         </div>
       </main>
