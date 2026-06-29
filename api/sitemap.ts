@@ -28,6 +28,10 @@ export default async function handler(req: any, res: any) {
     { url: "/dream-meanings", priority: "0.9", changefreq: "weekly" },
     { url: "/about", priority: "0.6", changefreq: "monthly" },
     { url: "/faq", priority: "0.6", changefreq: "monthly" },
+    { url: "/contact", priority: "0.5", changefreq: "monthly" },
+    { url: "/privacy", priority: "0.4", changefreq: "monthly" },
+    { url: "/terms", priority: "0.4", changefreq: "monthly" },
+    { url: "/support", priority: "0.4", changefreq: "monthly" },
   ];
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
