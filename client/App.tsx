@@ -9,6 +9,8 @@ import { HelmetProvider } from "react-helmet-async";
 import { lazy, Suspense } from "react";
 
 import { useLiveSystem } from "@/hooks/live/useLiveSystem";
+import { AudioProvider } from "@/context/AudioContext";
+import AmbientPlayer from "@/components/AmbientPlayer";
 
 const Index = lazy(() => import("./pages/Index"));
 const Gallery = lazy(() => import("./pages/Gallery"));
@@ -39,7 +41,9 @@ function App() {
           <Toaster />
           <Sonner />
 
+          <AudioProvider>
           <BrowserRouter>
+            <AmbientPlayer />
             <Suspense fallback={null}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -61,6 +65,7 @@ function App() {
               </Routes>
             </Suspense>
           </BrowserRouter>
+          </AudioProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>

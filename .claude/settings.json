@@ -22,7 +22,11 @@
       "Bash(ls server/ backend/)",
       "Bash(ls server.ts stripe-webhook.js vite.config.server.ts)",
       "Bash(ls public/sitemap.xml)",
-      "Bash(ls dist/spa/sitemap.xml)"
+      "Bash(ls dist/spa/sitemap.xml)",
+      "Bash(mv \"public/audio/ambient.mp3.mp3\" \"public/audio/ambient.mp3\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\ernes\\OneDrive\\Ambiente de Trabalho\\dreams-site-main\\public\\audio"
     ]
   }
 }
