@@ -20,7 +20,9 @@
       "Bash(echo \"exit: $?\")",
       "Bash(grep -rni \"\\\\$1\\\\|stripe\\\\|for just\\\\|starting at\\\\|per wish\" client/ index.html)",
       "Bash(ls server/ backend/)",
-      "Bash(ls server.ts stripe-webhook.js vite.config.server.ts)"
+      "Bash(ls server.ts stripe-webhook.js vite.config.server.ts)",
+      "Bash(ls public/sitemap.xml)",
+      "Bash(ls dist/spa/sitemap.xml)"
     ]
   }
 }

@@ -11,7 +11,7 @@ function getErrorMessage(field: string, value: string): string {
     case "wish":
       if (!value.trim()) return "Your dream cannot be empty.";
       if (value.trim().length < 10) return "Your dream needs at least 10 characters.";
-      if (value.length > 1000) return "Your dream is too long (max 1000 characters).";
+      if (value.length > 5000) return "Your dream is too long (max 5000 characters).";
       return "";
     case "author":
       if (!value.trim()) return "Please share your name or a creative pseudonym.";
@@ -69,8 +69,7 @@ export default function SubmitWish() {
 
     try {
       const title = generateTitle(wish, author);
-      const tempId = crypto.randomUUID();
-      const slug = generateSlug(title, tempId);
+      const slug = generateSlug(title);
 
       const { data, error: insertError } = await supabase
         .from("dreams")
@@ -90,8 +89,13 @@ export default function SubmitWish() {
         .single();
 
       if (insertError) {
-        console.error("Insert error:", insertError);
-        setError("Something went wrong. Please try again.");
+        console.error({
+          code: insertError.code,
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint,
+        });
+        setError(`[${insertError.code}] ${insertError.message}${insertError.hint ? " — " + insertError.hint : ""}`);
         return;
       }
 
@@ -178,14 +182,18 @@ export default function SubmitWish() {
                 onChange={(e) => setWish(e.target.value)}
                 disabled={isSubmitting}
                 minLength={10}
-                maxLength={1000}
+                maxLength={5000}
                 className="input-dark w-full p-4 rounded-lg resize-none"
                 placeholder="Describe your dream in detail. What makes it special? What do you hope for?"
                 required
               />
-              <div className="text-xs text-neon-secondary/60 mt-1 text-right">
-                {wish.length}/1000
-              </div>
+              {wish.length >= 4500 && (
+                <p className={`text-xs mt-1 font-exo2 ${wish.length >= 5000 ? "text-violet-400" : "text-violet-500/70"}`}>
+                  {wish.length >= 5000
+                    ? "Atingiste o máximo de 5000 caracteres."
+                    : `Estás perto do limite — ${5000 - wish.length} caracteres restantes`}
+                </p>
+              )}
             </div>
 
             <div>

@@ -1,4 +1,4 @@
-export function generateSlug(title: string, id: string): string {
+export function generateSlug(title: string): string {
   const base = title
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, "")
@@ -7,6 +7,6 @@ export function generateSlug(title: string, id: string): string {
     .replace(/-+/g, "-")
     .slice(0, 60);
 
-  const suffix = id.replace(/-/g, "").slice(0, 6);
+  const suffix = Math.random().toString(36).slice(2, 8);
   return `${base}-${suffix}`;
 }
