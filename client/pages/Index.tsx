@@ -205,14 +205,14 @@ export default function Index() {
 
     let frameId: number;
     const animate = () => {
-      ctx.fillStyle = "rgba(15,15,31,.1)";
+      ctx.fillStyle = "rgba(10,10,10,.1)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-        ctx.fillStyle = `rgba(127,90,240,${p.opacity})`;
+        ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();

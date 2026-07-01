@@ -213,7 +213,7 @@ export default function Gallery() {
                   className="card-dark p-6 rounded-lg hover:shadow-glow-neon transition"
                 >
                   {d.is_featured && (
-                    <span className="text-xs text-yellow-400">⭐ Featured</span>
+                    <span className="text-xs text-neon-primary">⭐ Featured</span>
                   )}
 
                   {d.likes! > 20 && (

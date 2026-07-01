@@ -1,8 +1,6 @@
 /** @import must precede all other statements */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -15,83 +13,83 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 260 20% 8%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 100%;
 
-    --card: 260 20% 11%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 260 20% 11%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 263 85% 61%;
-    --primary-foreground: 260 20% 8%;
+    --primary: 45 65% 52%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 263 100% 82%;
-    --secondary-foreground: 260 20% 8%;
+    --secondary: 0 0% 85%;
+    --secondary-foreground: 0 0% 4%;
 
-    --muted: 260 20% 25%;
-    --muted-foreground: 0 0% 82%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 263 85% 61%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 65% 52%;
+    --accent-foreground: 0 0% 4%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 260 20% 20%;
-    --input: 260 20% 7%;
-    --ring: 263 85% 61%;
+    --border: 0 0% 18%;
+    --input: 0 0% 4%;
+    --ring: 45 65% 52%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 260 20% 10%;
+    --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 263 85% 61%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 260 20% 20%;
+    --sidebar-primary: 45 65% 52%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 260 20% 15%;
-    --sidebar-ring: 263 85% 61%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 45 65% 52%;
   }
 
   .dark {
-    --background: 260 20% 8%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 100%;
 
-    --card: 260 20% 11%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 260 20% 11%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 263 85% 61%;
-    --primary-foreground: 260 20% 8%;
+    --primary: 45 65% 52%;
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 263 100% 82%;
-    --secondary-foreground: 260 20% 8%;
+    --secondary: 0 0% 85%;
+    --secondary-foreground: 0 0% 4%;
 
-    --muted: 260 20% 25%;
-    --muted-foreground: 0 0% 82%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 70%;
 
-    --accent: 263 85% 61%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 65% 52%;
+    --accent-foreground: 0 0% 4%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 260 20% 20%;
-    --input: 260 20% 7%;
-    --ring: 263 85% 61%;
+    --border: 0 0% 18%;
+    --input: 0 0% 4%;
+    --ring: 45 65% 52%;
 
-    --sidebar-background: 260 20% 10%;
+    --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 263 85% 61%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 260 20% 20%;
+    --sidebar-primary: 45 65% 52%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 260 20% 15%;
-    --sidebar-ring: 263 85% 61%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 45 65% 52%;
   }
 }
 
@@ -102,8 +100,8 @@
 
   body {
     @apply text-white;
-    background: linear-gradient(135deg, #0F0F1F 0%, #1A1A2E 100%);
-    font-family: "Exo 2", sans-serif;
+    background: linear-gradient(135deg, #0A0A0A 0%, #141414 100%);
+    font-family: "Inter", sans-serif;
   }
 
   :where(p, span, li, a, button, label, td, th) {
@@ -118,7 +116,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Orbitron", sans-serif;
+    font-family: "Cinzel", serif;
     font-weight: 700;
   }
 }

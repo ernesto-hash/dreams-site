@@ -52,8 +52,8 @@ export default function DreamWorldMap({ dreams }: { dreams: Dream[] }) {
     }));
 
   return (
-    <div className="w-full bg-slate-900/60 rounded-xl p-4 border border-neon-primary/20">
-      <h2 className="text-center text-yellow-400 font-orbitron font-bold text-xl mb-4">
+    <div className="w-full bg-dark-card/60 rounded-xl p-4 border border-neon-primary/20">
+      <h2 className="text-center text-neon-primary font-orbitron font-bold text-xl mb-4">
         Dreams Around The World
       </h2>
       <ComposableMap projectionConfig={{ scale: 147 }}>
@@ -63,12 +63,12 @@ export default function DreamWorldMap({ dreams }: { dreams: Dream[] }) {
               <Geography
                 key={geo.rsmKey}
                 geography={geo}
-                fill="#1A1A2E"
-                stroke="#D4A017"
+                fill="#141414"
+                stroke="#D4AF37"
                 strokeWidth={0.3}
                 style={{
                   default: { outline: "none" },
-                  hover:   { fill: "#2a2a4e", outline: "none" },
+                  hover:   { fill: "#1f1f1f", outline: "none" },
                   pressed: { outline: "none" },
                 }}
               />
@@ -84,7 +84,7 @@ export default function DreamWorldMap({ dreams }: { dreams: Dream[] }) {
           >
             <circle
               r={5}
-              fill="#D4A017"
+              fill="#D4AF37"
               opacity={0.85}
               style={{ cursor: "pointer" }}
             />
@@ -92,7 +92,7 @@ export default function DreamWorldMap({ dreams }: { dreams: Dream[] }) {
         ))}
       </ComposableMap>
       {tooltip && (
-        <p className="text-center text-yellow-400 text-sm mt-2 truncate px-4">{tooltip}</p>
+        <p className="text-center text-neon-primary text-sm mt-2 truncate px-4">{tooltip}</p>
       )}
       {markers.length === 0 && (
         <p className="text-center text-neon-secondary/50 text-sm -mt-4 pb-2">

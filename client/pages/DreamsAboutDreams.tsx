@@ -29,9 +29,9 @@ export default function DreamsAboutDreams() {
           <motion.span
             animate={{
               textShadow: [
-                "0 0 20px rgba(127,90,240,0.3)",
-                "0 0 40px rgba(127,90,240,0.6)",
-                "0 0 20px rgba(127,90,240,0.3)",
+                "0 0 20px rgba(212,175,55,0.3)",
+                "0 0 40px rgba(212,175,55,0.6)",
+                "0 0 20px rgba(212,175,55,0.3)",
               ],
             }}
             transition={{

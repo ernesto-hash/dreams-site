@@ -15,19 +15,19 @@ export default {
     extend: {
       colors: {
         neon: {
-          primary: "#7F5AF0",
-          secondary: "#D1D1FF",
+          primary: "#D4AF37",
+          secondary: "#E5E5E5",
         },
         dark: {
-          bg: "#0F0F1F",
-          card: "#1A1A2E",
-          input: "#121224",
+          bg: "#0A0A0A",
+          card: "#141414",
+          input: "#0F0F0F",
         },
       },
       fontFamily: {
-        orbitron: ["Orbitron", "sans-serif"],
-        exo2: ["Exo 2", "sans-serif"],
-        rajdhani: ["Rajdhani", "sans-serif"],
+        orbitron: ["Cinzel", "serif"],
+        exo2: ["Inter", "sans-serif"],
+        rajdhani: ["Inter", "sans-serif"],
       },
       fontSize: {
         "hero-desktop": "4rem",
@@ -58,10 +58,10 @@ export default {
         },
         "glow": {
           "0%, 100%": {
-            boxShadow: "0 0 10px rgba(127, 90, 240, 0.5), 0 0 20px rgba(127, 90, 240, 0.3)"
+            boxShadow: "0 0 10px rgba(212, 175, 55, 0.5), 0 0 20px rgba(212, 175, 55, 0.3)"
           },
           "50%": {
-            boxShadow: "0 0 20px rgba(127, 90, 240, 0.8), 0 0 40px rgba(127, 90, 240, 0.5)"
+            boxShadow: "0 0 20px rgba(212, 175, 55, 0.8), 0 0 40px rgba(212, 175, 55, 0.5)"
           },
         },
         "scale-in": {
@@ -93,11 +93,11 @@ export default {
         "particle": "particle 2s ease-out forwards",
       },
       boxShadow: {
-        "glow-neon": "0 0 20px rgba(127, 90, 240, 0.6), 0 0 40px rgba(127, 90, 240, 0.3)",
-        "glow-neon-sm": "0 0 10px rgba(127, 90, 240, 0.4)",
+        "glow-neon": "0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3)",
+        "glow-neon-sm": "0 0 10px rgba(212, 175, 55, 0.4)",
       },
       backgroundImage: {
-        "gradient-dark": "linear-gradient(135deg, #0F0F1F 0%, #1A1A2E 100%)",
+        "gradient-dark": "linear-gradient(135deg, #0A0A0A 0%, #141414 100%)",
       },
     },
   },
