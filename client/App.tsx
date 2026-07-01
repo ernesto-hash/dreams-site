@@ -28,6 +28,7 @@ const DreamsAboutDreams = lazy(() => import("./pages/DreamsAboutDreams"));
 const DreamsThatComeTrue = lazy(() => import("./pages/DreamsThatComeTrue"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const DreamMeanings = lazy(() => import("./pages/DreamMeanings"));
+const Feed = lazy(() => import("./pages/Feed"));
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/dreams-that-come-true" element={<DreamsThatComeTrue />} />
                 <Route path="/dreams/:category" element={<CategoryPage />} />
                 <Route path="/dream-meanings" element={<DreamMeanings />} />
+                <Route path="/feed" element={<Feed />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
