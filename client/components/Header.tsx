@@ -1,13 +1,21 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
 
   const [open, setOpen] = useState(false); // dropdown desktop
   const [mobileMenu, setMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -115,6 +123,31 @@ export default function Header() {
             </AnimatePresence>
           </div>
 
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="font-exo2 text-neon-secondary text-sm">
+                {profile?.username || "Account"}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="font-exo2 text-neon-secondary hover:text-neon-primary transition-all"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className={`font-exo2 transition-all ${
+                isActive("/login")
+                  ? "text-neon-primary"
+                  : "text-neon-secondary hover:text-neon-primary"
+              }`}
+            >
+              Login
+            </Link>
+          )}
+
         </nav>
 
         {/* Mobile Hamburger (SVG animado) */}
@@ -199,6 +232,19 @@ export default function Header() {
               <Link to="/submit" className="neon-button mt-4 text-center">
                 Submit My Dream — Free
               </Link>
+
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-neon-secondary hover:text-neon-primary text-left"
+                >
+                  Log Out ({profile?.username || "Account"})
+                </button>
+              ) : (
+                <Link to="/login" className="text-neon-secondary hover:text-neon-primary">
+                  Login
+                </Link>
+              )}
 
               <p className="text-xs text-neon-secondary/50 text-center mt-2">
                 Swipe up to close

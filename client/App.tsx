@@ -10,6 +10,7 @@ import { lazy, Suspense } from "react";
 
 import { useLiveSystem } from "@/hooks/live/useLiveSystem";
 import { AudioProvider } from "@/context/AudioContext";
+import { AuthProvider } from "@/context/AuthContext";
 import AmbientPlayer from "@/components/AmbientPlayer";
 
 const Index = lazy(() => import("./pages/Index"));
@@ -29,6 +30,8 @@ const DreamsThatComeTrue = lazy(() => import("./pages/DreamsThatComeTrue"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage"));
 const DreamMeanings = lazy(() => import("./pages/DreamMeanings"));
 const Feed = lazy(() => import("./pages/Feed"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,7 @@ function App() {
           <Toaster />
           <Sonner />
 
+          <AuthProvider>
           <AudioProvider>
           <BrowserRouter>
             <AmbientPlayer />
@@ -63,11 +67,14 @@ function App() {
                 <Route path="/dreams/:category" element={<CategoryPage />} />
                 <Route path="/dream-meanings" element={<DreamMeanings />} />
                 <Route path="/feed" element={<Feed />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </BrowserRouter>
           </AudioProvider>
+          </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>
