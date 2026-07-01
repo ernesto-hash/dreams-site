@@ -9,6 +9,7 @@ type Profile = {
   avatar: string | null;
   bio: string | null;
   contact: string | null;
+  is_premium: boolean;
   created_at: string;
 };
 
@@ -41,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loadProfile(userId: string) {
     const { data } = await supabase
       .from("profiles")
-      .select("id, username, country, avatar, bio, contact, created_at")
+      .select("id, username, country, avatar, bio, contact, is_premium, created_at")
       .eq("id", userId)
       .single();
 
