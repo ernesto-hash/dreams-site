@@ -54,9 +54,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   function toggle() {
     const audio = audioRef.current;
-    console.log("toggle chamado, audio =", audioRef.current);
     if (!audio) {
-      console.log("toggle: audio é null, clique ignorado");
       return;
     }
 
@@ -76,9 +74,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           fadeIn(audio);
           if (typeof window !== "undefined") localStorage.setItem("ambient-music", "on");
         })
-        .catch((e) => {
-          console.log("play rejeitado:", e.name, e.message);
-        });
+        .catch(() => {});
     }
   }
 

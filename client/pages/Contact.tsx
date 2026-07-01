@@ -22,7 +22,7 @@ export default function Contact() {
             <div className="bg-dark-card/50 p-6 rounded-lg">
               <h2 className="text-xl font-bold text-neon-primary mb-4">Get in Touch</h2>
               <p className="text-neon-secondary mb-6">
-                Have questions about dreams, submissions, or payments? We're here to help.
+                Have questions about dreams or submissions? We're here to help.
               </p>
               
               <div className="space-y-4">
@@ -42,7 +42,7 @@ export default function Contact() {
               <h2 className="text-xl font-bold text-neon-primary mb-4">Common Questions</h2>
               <ul className="space-y-3">
                 <li className="text-neon-secondary">• How do I submit a dream?</li>
-                <li className="text-neon-secondary">• What happens after payment?</li>
+                <li className="text-neon-secondary">• What happens after I submit?</li>
                 <li className="text-neon-secondary">• Can I edit my dream?</li>
                 <li className="text-neon-secondary">• How are dreams moderated?</li>
               </ul>
