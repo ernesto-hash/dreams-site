@@ -227,6 +227,15 @@ export default function Index() {
         <section className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center items-center text-center gap-6 mb-8">
           <Hero3D />
 
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 60% at center, rgba(10,10,10,0.72) 0%, rgba(10,10,10,0.4) 40%, rgba(10,10,10,0) 75%)",
+            }}
+          />
+
           <div className="relative z-10 flex flex-col items-center gap-6">
             <h1 className="font-orbitron font-bold text-4xl sm:text-5xl md:text-6xl max-w-4xl">
               Dreams{" "}
