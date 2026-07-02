@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:client": "vite build",
-    "postbuild": "react-snap || true",
+    "postbuild": "node -e \"try{require('child_process').execSync('react-snap',{stdio:'inherit'})}catch(e){}\"",
     "preview": "vite preview"
   },
   "reactSnap": {
@@ -28,6 +28,7 @@
       "/terms",
       "/support",
       "/dream-meanings",
+      "/feed",
       "/dreams-about-dreams",
       "/dreams-that-come-true",
       "/dreams/flying",
