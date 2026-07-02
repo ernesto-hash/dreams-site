@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
@@ -10,6 +9,7 @@ import LiveActivity from "@/components/ui/LiveActivity";
 import Milestones from "@/components/ui/Milestones";
 import TrendingDreams from "@/components/ui/TrendingDreams";
 import RelateButton from "@/components/ui/RelateButton";
+import Reveal from "@/components/ui/Reveal";
 import DreamWorldMap from "@/components/DreamWorldMap";
 
 import useSocialFeed from "@/hooks/useSocialFeed";
@@ -240,7 +240,7 @@ export default function Index() {
         </section>
 
         {/* GLOBAL STATS */}
-        <section className="py-6 text-center space-y-2 mb-8">
+        <Reveal className="py-6 text-center space-y-2 mb-8">
           <h3 className="font-orbitron text-xl text-neon-primary">
             {totalDreams.toLocaleString()} Dreams Submitted Worldwide
           </h3>
@@ -255,20 +255,20 @@ export default function Index() {
               Active Countries: {activeCountries.join(", ")}
             </p>
           )}
-        </section>
+        </Reveal>
 
         {/* WORLD MAP */}
-        <section className="mb-12">
+        <Reveal className="mb-12">
           <DreamWorldMap dreams={recentDreams} />
-        </section>
+        </Reveal>
 
         {/* MILESTONES */}
-        <section className="mb-12">
+        <Reveal className="mb-12">
           <Milestones />
-        </section>
+        </Reveal>
 
         {/* MAIN CONTENT GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <Reveal className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           <div className="lg:col-span-2">
             {dreamOfDay && (
               <section className="card-dark p-8 rounded-2xl h-full flex flex-col items-center justify-center text-center">
@@ -294,7 +294,7 @@ export default function Index() {
           <div className="lg:col-span-1">
             <TrendingDreams />
           </div>
-        </div>
+        </Reveal>
 
         {/* GLOBAL LIVE FEED */}
         <section className="mb-12">
@@ -304,12 +304,7 @@ export default function Index() {
         {/* MANIFESTO */}
         <section className="mb-12">
           <div className="max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="card-dark backdrop-blur-xl border border-neon-primary/30 rounded-3xl p-8 sm:p-12"
-            >
+            <Reveal className="card-dark backdrop-blur-xl border border-neon-primary/30 rounded-3xl p-8 sm:p-12">
               <h2 className="font-orbitron text-2xl sm:text-3xl text-center mb-6">
                 A Monument Built From Dreams
               </h2>
@@ -317,7 +312,7 @@ export default function Index() {
                 Dreams have always been part of human history. Monument of Dreams
                 exists to preserve them — and to connect the people who share them.
               </p>
-            </motion.div>
+            </Reveal>
           </div>
         </section>
 

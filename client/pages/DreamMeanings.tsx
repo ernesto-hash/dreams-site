@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
+import Reveal from "@/components/ui/Reveal";
 
 const sections = [
   {
@@ -67,30 +68,32 @@ export default function DreamMeanings() {
         </div>
 
         <div className="space-y-16">
-          {sections.map(section => (
-            <article key={section.id} className="card-dark p-8 rounded-2xl">
-              <h2 className="font-orbitron text-2xl font-bold text-neon-primary mb-6">
-                {section.heading}
-              </h2>
-              <p className="text-neon-secondary leading-relaxed text-base">
-                {section.content}
-              </p>
-              <div className="mt-8 pt-6 border-t border-neon-primary/20">
-                <p className="text-neon-secondary/70 text-sm mb-3">
-                  Have you experienced this type of dream? Share it with the world and let thousands of people read it.
+          {sections.map((section, index) => (
+            <article key={section.id}>
+              <Reveal delay={Math.min(index * 0.05, 0.3)} className="card-dark p-8 rounded-2xl">
+                <h2 className="font-orbitron text-2xl font-bold text-neon-primary mb-6">
+                  {section.heading}
+                </h2>
+                <p className="text-neon-secondary leading-relaxed text-base">
+                  {section.content}
                 </p>
-                <Link
-                  to="/submit"
-                  className="neon-button inline-block px-6 py-2 text-sm"
-                >
-                  Share your dream about {section.id.replace(/-/g, " ")}
-                </Link>
-              </div>
+                <div className="mt-8 pt-6 border-t border-neon-primary/20">
+                  <p className="text-neon-secondary/70 text-sm mb-3">
+                    Have you experienced this type of dream? Share it with the world and let thousands of people read it.
+                  </p>
+                  <Link
+                    to="/submit"
+                    className="neon-button inline-block px-6 py-2 text-sm"
+                  >
+                    Share your dream about {section.id.replace(/-/g, " ")}
+                  </Link>
+                </div>
+              </Reveal>
             </article>
           ))}
         </div>
 
-        <div className="mt-16 text-center card-dark p-8 rounded-2xl">
+        <Reveal className="mt-16 text-center card-dark p-8 rounded-2xl">
           <h2 className="font-orbitron text-2xl font-bold text-white mb-4">
             Your Dream Has Meaning
           </h2>
@@ -100,7 +103,7 @@ export default function DreamMeanings() {
           <Link to="/submit" className="neon-button px-8 py-3 text-base">
             Submit My Dream
           </Link>
-        </div>
+        </Reveal>
       </main>
 
       <Footer />

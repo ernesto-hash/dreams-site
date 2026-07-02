@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
+import Reveal from "@/components/ui/Reveal";
 
 export default function DreamsThatComeTrue() {
   const fadeUp = {
@@ -89,13 +90,9 @@ export default function DreamsThatComeTrue() {
             ],
           },
         ].map((section, index) => (
-          <motion.section
+          <Reveal
             key={index}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            transition={{ duration: 0.6 }}
+            delay={index * 0.05}
             whileHover={{ y: -6, scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
             className="card-dark backdrop-blur-lg border border-neon-primary/20 rounded-3xl p-8 sm:p-12 mb-16 cursor-default"
@@ -108,18 +105,11 @@ export default function DreamsThatComeTrue() {
                 <p key={i}>{p}</p>
               ))}
             </div>
-          </motion.section>
+          </Reveal>
         ))}
 
         {/* MICRO COPY – LINK BETWEEN PAGES */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className="text-center mt-24 mb-24"
-        >
+        <Reveal className="text-center mt-24 mb-24">
           <p className="text-neon-secondary/70 mb-4">
             Want to understand why dreams matter in the first place?
           </p>
@@ -129,17 +119,10 @@ export default function DreamsThatComeTrue() {
           >
             Explore the meaning of dreams →
           </Link>
-        </motion.div>
+        </Reveal>
 
         {/* CALL TO REFLECTION */}
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className="mt-24 text-center"
-        >
+        <Reveal className="mt-24 text-center">
           <div className="card-dark border border-neon-primary/30 rounded-3xl p-10 sm:p-14 max-w-3xl mx-auto shadow-glow-neon">
             <p className="text-neon-secondary/90 text-lg sm:text-xl leading-relaxed mb-6">
               Some dreams come true quietly. Others change everything.
@@ -148,7 +131,7 @@ export default function DreamsThatComeTrue() {
               Which dream are you carrying with you right now?
             </p>
           </div>
-        </motion.section>
+        </Reveal>
       </main>
 
       <Footer />

@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
+import Reveal from "@/components/ui/Reveal";
 
 export default function About() {
   return (
@@ -25,7 +26,7 @@ export default function About() {
           </div>
 
           {/* Vision Section */}
-          <section className="mb-16">
+          <Reveal className="mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>
                 <h2 className="font-orbitron text-3xl font-bold text-neon-primary mb-4">
@@ -56,10 +57,10 @@ export default function About() {
                 </p>
               </div>
             </div>
-          </section>
+          </Reveal>
 
           {/* Mission Section */}
-          <section className="mb-16">
+          <Reveal className="mb-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="card-dark p-8 rounded-lg order-2 md:order-1">
                 <div className="text-6xl mb-4">⬈</div>
@@ -99,10 +100,10 @@ export default function About() {
                 </ul>
               </div>
             </div>
-          </section>
+          </Reveal>
 
           {/* How It Works */}
-          <section className="mb-16">
+          <Reveal className="mb-16">
             <h2 className="font-orbitron text-3xl font-bold text-white mb-8 text-center">
               How It Works
             </h2>
@@ -127,10 +128,10 @@ export default function About() {
                 </div>
               ))}
             </div>
-          </section>
+          </Reveal>
 
           {/* Values */}
-          <section>
+          <Reveal>
             <h2 className="font-orbitron text-3xl font-bold text-white mb-8 text-center">
               Our Core Values
             </h2>
@@ -155,7 +156,7 @@ export default function About() {
                 </div>
               ))}
             </div>
-          </section>
+          </Reveal>
         </div>
       </main>
 

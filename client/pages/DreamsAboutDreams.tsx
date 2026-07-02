@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
+import Reveal from "@/components/ui/Reveal";
 
 export default function DreamsAboutDreams() {
   const fadeUp = {
@@ -97,13 +98,9 @@ export default function DreamsAboutDreams() {
             ],
           },
         ].map((section, index) => (
-          <motion.section
+          <Reveal
             key={index}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            transition={{ duration: 0.6 }}
+            delay={index * 0.05}
             whileHover={{ y: -6, scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
             className="card-dark backdrop-blur-lg border border-neon-primary/20 rounded-3xl p-8 sm:p-12 mb-16 transition cursor-default"
@@ -116,25 +113,18 @@ export default function DreamsAboutDreams() {
                 <p key={i}>{p}</p>
               ))}
             </div>
-          </motion.section>
+          </Reveal>
         ))}
 
         {/* CONCLUSION */}
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className="mt-24 text-center"
-        >
+        <Reveal className="mt-24 text-center">
           <div className="card-dark border border-neon-primary/30 rounded-3xl p-10 sm:p-14 max-w-3xl mx-auto shadow-glow-neon">
             <p className="text-neon-secondary/90 text-lg sm:text-xl leading-relaxed">
               Every dream matters. Some remain personal, others shape the world —
               but all deserve to be remembered.
             </p>
           </div>
-        </motion.section>
+        </Reveal>
       </main>
 
       <Footer />
