@@ -1,22 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { prefersReducedMotion, supportsWebGL } from "@/lib/webgl";
+import { createGlowTexture } from "@/lib/glowTexture";
 
 const MOBILE_BREAKPOINT = 768;
 const GOLD = 0xd4af37;
 const WARM = 0xfff3d6;
-
-function prefersReducedMotion(): boolean {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function supportsWebGL(): boolean {
-  try {
-    const canvas = document.createElement("canvas");
-    return !!(canvas.getContext("webgl2") || canvas.getContext("webgl"));
-  } catch {
-    return false;
-  }
-}
 
 type ShardInstance = {
   mesh: THREE.InstancedMesh;
@@ -152,19 +141,7 @@ function setupScene(
     scene.add(fillLight);
     scene.add(new THREE.AmbientLight(0x101010, 1));
 
-    function glowTex() {
-      const s = 128;
-      const c = document.createElement("canvas");
-      c.width = c.height = s;
-      const x = c.getContext("2d")!;
-      const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-      g.addColorStop(0, "rgba(255,255,255,1)");
-      g.addColorStop(0.25, "rgba(255,255,255,.6)");
-      g.addColorStop(1, "rgba(255,255,255,0)");
-      x.fillStyle = g; x.fillRect(0, 0, s, s);
-      return new THREE.CanvasTexture(c);
-    }
-    const glowTexture = glowTex();
+    const glowTexture = createGlowTexture();
 
     // ---- suspended shards (gold metal + crystal) ----
     const cluster = new THREE.Group();
@@ -341,14 +318,33 @@ function setupScene(
       frameId = requestAnimationFrame(tick);
     };
     const start = () => {
-      if (frameId !== null || document.hidden) return;
+      if (frameId !== null) return;
       tick();
     };
 
+    // só corre quando a tab está visível E a hero está mesmo no ecrã — evita
+    // ter o hero e o globo (mais abaixo na página) a renderizar em simultâneo
+    let tabVisible = !document.hidden;
+    let inViewport = false;
+    const syncRunState = () => {
+      if (tabVisible && inViewport) start();
+      else stop();
+    };
+
     const handleVisibilityChange = () => {
-      if (document.hidden) stop(); else start();
+      tabVisible = !document.hidden;
+      syncRunState();
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        inViewport = entries[0].isIntersecting;
+        syncRunState();
+      },
+      { threshold: 0.15 }
+    );
+    intersectionObserver.observe(container);
 
     const handleResize = () => applyRes();
     window.addEventListener("resize", handleResize);
@@ -360,10 +356,9 @@ function setupScene(
     };
     canvas.addEventListener("webglcontextlost", handleContextLost, false);
 
-    start();
-
     return () => {
       stop();
+      intersectionObserver.disconnect();
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("resize", handleResize);
       document.removeEventListener("visibilitychange", handleVisibilityChange);

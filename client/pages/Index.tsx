@@ -11,7 +11,7 @@ import TrendingDreams from "@/components/ui/TrendingDreams";
 import RelateButton from "@/components/ui/RelateButton";
 import Reveal from "@/components/ui/Reveal";
 import Hero3D from "@/components/Hero3D";
-import DreamWorldMap from "@/components/DreamWorldMap";
+import Globe3D from "@/components/Globe3D";
 
 import useSocialFeed from "@/hooks/useSocialFeed";
 import SocialNotifications from "@/components/live/SocialNotifications";
@@ -90,8 +90,8 @@ export default function Index() {
         .not("country", "is", null)
         .limit(200);
       if (countryData) {
-        const unique = [...new Set(countryData.map((d) => d.country).filter(Boolean))];
-        setActiveCountries(unique.slice(0, 8));
+        const unique = [...new Set(countryData.map((d) => d.country).filter(Boolean))] as string[];
+        setActiveCountries(unique);
       }
 
       setLoading(false);
@@ -268,14 +268,14 @@ export default function Index() {
           )}
           {activeCountries.length > 0 && (
             <p className="text-neon-secondary text-xs">
-              Active Countries: {activeCountries.join(", ")}
+              Active Countries: {activeCountries.slice(0, 8).join(", ")}
             </p>
           )}
         </Reveal>
 
         {/* WORLD MAP */}
         <Reveal className="mb-12">
-          <DreamWorldMap dreams={recentDreams} />
+          <Globe3D countries={activeCountries} />
         </Reveal>
 
         {/* MILESTONES */}
