@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
@@ -34,8 +34,6 @@ type LiveEvent = {
 };
 
 export default function Index() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const [recentDreams, setRecentDreams] = useState<Dream[]>([]);
   const [dreamOfDay, setDreamOfDay] = useState<Dream | null>(null);
   const [totalDreams, setTotalDreams] = useState(0);
@@ -180,53 +178,6 @@ export default function Index() {
     document.head.appendChild(script);
   }, []);
 
-  // PARTICLES — with proper cleanup to avoid memory leak
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const particles = Array.from({ length: 50 }).map(() => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 1,
-      vy: (Math.random() - 0.5) * 1,
-      radius: Math.random() * 2 + 0.5,
-      opacity: Math.random() * 0.5 + 0.1,
-    }));
-
-    let frameId: number;
-    const animate = () => {
-      ctx.fillStyle = "rgba(10,10,10,.1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-        ctx.fillStyle = `rgba(212,175,55,${p.opacity})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      frameId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
   const dreamUrl = (d: Dream) => `/dream/${d.slug || d.id}`;
 
   return (
@@ -265,8 +216,6 @@ export default function Index() {
           </div>
         </div>
       )}
-
-      <canvas ref={canvasRef} className="fixed inset-0 opacity-20 pointer-events-none" />
 
       <main className="relative z-10 text-white container mx-auto px-4 sm:px-6">
         <div className="pt-6 pb-4">

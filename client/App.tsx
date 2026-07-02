@@ -12,6 +12,7 @@ import { useLiveSystem } from "@/hooks/live/useLiveSystem";
 import { AudioProvider } from "@/context/AudioContext";
 import { AuthProvider } from "@/context/AuthContext";
 import AmbientPlayer from "@/components/AmbientPlayer";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 const Index = lazy(() => import("./pages/Index"));
 const Gallery = lazy(() => import("./pages/Gallery"));
@@ -48,6 +49,7 @@ function App() {
           <AuthProvider>
           <AudioProvider>
           <BrowserRouter>
+            <AnimatedBackground />
             <AmbientPlayer />
             <Suspense fallback={null}>
               <Routes>
