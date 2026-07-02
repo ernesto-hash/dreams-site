@@ -127,11 +127,15 @@
   }
 
   .neon-button {
-    @apply bg-neon-primary text-white px-6 py-3 rounded-xl font-exo2 font-semibold transition-all duration-300 hover:shadow-glow-neon border border-neon-primary;
+    @apply bg-neon-primary text-white px-6 py-3 rounded-xl font-exo2 font-semibold transition-all duration-300 hover:shadow-glow-neon hover:border-[#F2D675] border border-neon-primary;
   }
 
   .neon-button:hover {
     @apply scale-105;
+  }
+
+  .neon-button:active {
+    @apply scale-95 shadow-glow-neon-sm;
   }
 
   .card-dark {
@@ -140,5 +144,11 @@
 
   .input-dark {
     @apply bg-dark-input border border-neon-primary/30 text-white placeholder-gray-400 focus:outline-none focus:border-neon-primary focus:ring-1 focus:ring-neon-primary/50;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-glow {
+    animation: none;
   }
 }

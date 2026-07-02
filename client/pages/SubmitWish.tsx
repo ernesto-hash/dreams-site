@@ -226,7 +226,7 @@ export default function SubmitWish() {
               className={`w-full py-4 font-bold rounded-lg transition-all ${
                 isSubmitting
                   ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "neon-button hover:shadow-glow-neon hover:scale-[1.02] active:scale-[0.98]"
+                  : "neon-button animate-glow hover:shadow-glow-neon hover:scale-[1.02] active:scale-[0.98]"
               }`}
             >
               {isSubmitting ? "Submitting your dream..." : "Submit My Dream — Free"}

@@ -234,7 +234,7 @@ export default function Index() {
             Monument of Dreams is a free digital space where people from all over the
             world share their dreams and connect with others who share the same vision.
           </p>
-          <Link to="/submit" className="neon-button px-7 py-3 mt-4">
+          <Link to="/submit" className="neon-button animate-glow px-7 py-3 mt-4">
             Submit My Dream — Free
           </Link>
         </section>
