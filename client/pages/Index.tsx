@@ -224,7 +224,7 @@ export default function Index() {
         </div>
 
         {/* HERO */}
-        <section className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center items-center text-center gap-6 mb-8">
+        <section className="relative overflow-hidden min-h-[100dvh] sm:min-h-[80vh] flex flex-col justify-center items-center text-center gap-6 mb-8">
           <Hero3D />
 
           <div
