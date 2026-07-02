@@ -10,6 +10,7 @@ import Milestones from "@/components/ui/Milestones";
 import TrendingDreams from "@/components/ui/TrendingDreams";
 import RelateButton from "@/components/ui/RelateButton";
 import Reveal from "@/components/ui/Reveal";
+import Hero3D from "@/components/Hero3D";
 import DreamWorldMap from "@/components/DreamWorldMap";
 
 import useSocialFeed from "@/hooks/useSocialFeed";
@@ -223,20 +224,24 @@ export default function Index() {
         </div>
 
         {/* HERO */}
-        <section className="min-h-[80vh] flex flex-col justify-center items-center text-center gap-6 mb-8">
-          <h1 className="font-orbitron font-bold text-4xl sm:text-5xl md:text-6xl max-w-4xl">
-            Dreams{" "}
-            <span className="bg-gradient-to-r from-neon-primary to-neon-secondary bg-clip-text text-transparent">
-              Are True
-            </span>
-          </h1>
-          <p className="text-neon-secondary max-w-xl text-sm sm:text-lg">
-            Monument of Dreams is a free digital space where people from all over the
-            world share their dreams and connect with others who share the same vision.
-          </p>
-          <Link to="/submit" className="neon-button animate-glow px-7 py-3 mt-4">
-            Submit My Dream — Free
-          </Link>
+        <section className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center items-center text-center gap-6 mb-8">
+          <Hero3D />
+
+          <div className="relative z-10 flex flex-col items-center gap-6">
+            <h1 className="font-orbitron font-bold text-4xl sm:text-5xl md:text-6xl max-w-4xl">
+              Dreams{" "}
+              <span className="bg-gradient-to-r from-neon-primary to-neon-secondary bg-clip-text text-transparent">
+                Are True
+              </span>
+            </h1>
+            <p className="text-neon-secondary max-w-xl text-sm sm:text-lg">
+              Monument of Dreams is a free digital space where people from all over the
+              world share their dreams and connect with others who share the same vision.
+            </p>
+            <Link to="/submit" className="neon-button animate-glow px-7 py-3 mt-4">
+              Submit My Dream — Free
+            </Link>
+          </div>
         </section>
 
         {/* GLOBAL STATS */}

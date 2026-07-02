@@ -16,7 +16,10 @@
   "reactSnap": {
     "source": "dist/spa",
     "destination": "dist/spa",
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ],
     "include": [
       "/",
       "/gallery",
@@ -39,7 +42,9 @@
       "/dreams/future",
       "/dreams/fears"
     ],
-    "minifyHtml": { "collapseWhitespace": false },
+    "minifyHtml": {
+      "collapseWhitespace": false
+    },
     "crawl": false,
     "inlineCss": false
   },
@@ -55,6 +60,7 @@
     "react-helmet-async": "^2.0.5",
     "react-router-dom": "^6.30.1",
     "react-simple-maps": "^3.0.0",
+    "three": "^0.185.1",
     "uuid": "^13.0.0",
     "zod": "^3.25.76"
   },
@@ -84,6 +90,7 @@
     "@types/node": "^24.10.4",
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
+    "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "autoprefixer": "^10.4.21",

@@ -1,11 +1,16 @@
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 const PARTICLE_COUNT = 28;
 
 export default function AnimatedBackground() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (isHome) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -97,7 +102,9 @@ export default function AnimatedBackground() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       reducedMotionQuery.removeEventListener("change", handleMotionChange);
     };
-  }, []);
+  }, [isHome]);
+
+  if (isHome) return null;
 
   return (
     <canvas
