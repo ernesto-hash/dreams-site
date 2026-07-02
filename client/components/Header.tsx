@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import PremiumSeal from "@/components/ui/PremiumSeal";
 
 export default function Header() {
   const location = useLocation();
@@ -70,6 +71,17 @@ export default function Header() {
           </Link>
 
           <Link
+            to="/feed"
+            className={`font-exo2 transition-all ${
+              isActive("/feed")
+                ? "text-neon-primary"
+                : "text-neon-secondary hover:text-neon-primary"
+            }`}
+          >
+            Feed
+          </Link>
+
+          <Link
             to="/submit"
             className={`font-exo2 transition-all ${
               isActive("/submit")
@@ -125,8 +137,9 @@ export default function Header() {
 
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="font-exo2 text-neon-secondary text-sm">
+              <span className="font-exo2 text-neon-secondary text-sm flex items-center gap-2">
                 {profile?.username || "Account"}
+                <PremiumSeal active={profile?.is_premium} />
               </span>
               <button
                 onClick={handleLogout}
@@ -219,6 +232,9 @@ export default function Header() {
               <Link to="/gallery" className="text-neon-secondary hover:text-neon-primary">
                 Gallery
               </Link>
+              <Link to="/feed" className="text-neon-secondary hover:text-neon-primary">
+                Feed
+              </Link>
               <Link to="/submit" className="text-neon-secondary hover:text-neon-primary">
                 Submit Dream
               </Link>
@@ -236,9 +252,10 @@ export default function Header() {
               {user ? (
                 <button
                   onClick={handleLogout}
-                  className="text-neon-secondary hover:text-neon-primary text-left"
+                  className="text-neon-secondary hover:text-neon-primary text-left flex items-center gap-2"
                 >
                   Log Out ({profile?.username || "Account"})
+                  <PremiumSeal active={profile?.is_premium} />
                 </button>
               ) : (
                 <Link to="/login" className="text-neon-secondary hover:text-neon-primary">

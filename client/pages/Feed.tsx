@@ -27,7 +27,7 @@ export default function Feed() {
 
     const { data, error } = await supabase
       .from("dreams")
-      .select("id, slug, description, author, country, created_at, dream_relations(count)")
+      .select("id, slug, description, author, country, created_at, is_featured, dream_relations(count)")
       .order("created_at", { ascending: false })
       .range(from, to);
 

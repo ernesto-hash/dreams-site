@@ -129,7 +129,7 @@ export default function Index() {
         .from("live_sessions")
         .select("*", { count: "exact", head: true })
         .gte("last_seen", fiveMinutesAgo);
-      setLiveCount(count || 1);
+      setLiveCount(count || 0);
     };
 
     fetchCount();
@@ -244,12 +244,14 @@ export default function Index() {
           <h3 className="font-orbitron text-xl text-neon-primary">
             {totalDreams.toLocaleString()} Dreams Submitted Worldwide
           </h3>
-          <p className="text-neon-secondary text-sm">
-            {liveCount.toLocaleString()} Live Visitors Worldwide
-            <span className="inline-block ml-2 text-xs px-2 py-1 rounded-full bg-neon-primary/20 animate-pulse">
-              Live
-            </span>
-          </p>
+          {liveCount > 0 && (
+            <p className="text-neon-secondary text-sm">
+              {liveCount.toLocaleString()} Live Visitors Worldwide
+              <span className="inline-block ml-2 text-xs px-2 py-1 rounded-full bg-neon-primary/20 animate-pulse">
+                Live
+              </span>
+            </p>
+          )}
           {activeCountries.length > 0 && (
             <p className="text-neon-secondary text-xs">
               Active Countries: {activeCountries.join(", ")}

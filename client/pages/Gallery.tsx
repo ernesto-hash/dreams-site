@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 import Seo from "@/components/Seo";
+import PremiumSeal from "@/components/ui/PremiumSeal";
 
 type Dream = {
   id: string;
@@ -212,9 +213,7 @@ export default function Gallery() {
                   key={d.id}
                   className="card-dark p-6 rounded-lg hover:shadow-glow-neon transition"
                 >
-                  {d.is_featured && (
-                    <span className="text-xs text-neon-primary">⭐ Featured</span>
-                  )}
+                  <PremiumSeal active={d.is_featured} />
 
                   {d.likes! > 20 && (
                     <span className="text-xs text-red-400 ml-2">

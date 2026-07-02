@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PremiumSeal from "@/components/ui/PremiumSeal";
 
 export type FeedDream = {
   id: string;
@@ -7,6 +8,7 @@ export type FeedDream = {
   author?: string | null;
   country?: string | null;
   created_at?: string | null;
+  is_featured?: boolean | null;
   dream_relations?: { count: number }[];
 };
 
@@ -32,9 +34,10 @@ export default function FeedCard({ dream }: { dream: FeedDream }) {
       </p>
 
       <div className="flex justify-between items-center text-xs text-neon-secondary/60 border-t border-neon-primary/20 pt-3">
-        <span>
+        <span className="flex items-center gap-2">
           {dream.author || "Anonymous"}
           {dream.country ? ` — ${dream.country}` : ""}
+          <PremiumSeal active={dream.is_featured} />
         </span>
         <span>{formatDate(dream.created_at)}</span>
       </div>
