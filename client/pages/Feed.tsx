@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
@@ -9,56 +9,61 @@ const PAGE_SIZE = 15;
 
 export default function Feed() {
   const [dreams, setDreams] = useState<FeedDream[]>([]);
-  const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-
-  const loadingRef = useRef(false);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  const loadPage = useCallback(async (pageNumber: number) => {
-    if (loadingRef.current) return;
+  const loadingRef = useRef(false);
+  const hasMoreRef = useRef(true);
+  const offsetRef = useRef(0);
+
+  const fetchMore = async () => {
+    if (loadingRef.current || !hasMoreRef.current) return;
     loadingRef.current = true;
     setLoading(true);
 
-    const from = pageNumber * PAGE_SIZE;
+    const from = offsetRef.current;
     const to = from + PAGE_SIZE - 1;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("dreams")
       .select("id, slug, description, author, country, created_at, dream_relations(count)")
       .order("created_at", { ascending: false })
       .range(from, to);
 
-    setDreams((prev) => (pageNumber === 0 ? data || [] : [...prev, ...(data || [])]));
-    if (!data || data.length < PAGE_SIZE) setHasMore(false);
+    if (!error && data) {
+      setDreams((prev) => (from === 0 ? data : [...prev, ...data]));
+      offsetRef.current = from + PAGE_SIZE;
+      const more = data.length === PAGE_SIZE;
+      hasMoreRef.current = more;
+      setHasMore(more);
+    }
 
-    setLoading(false);
     loadingRef.current = false;
-  }, []);
+    setLoading(false);
+  };
+
+  const fetchMoreRef = useRef(fetchMore);
+  useEffect(() => {
+    fetchMoreRef.current = fetchMore;
+  });
 
   useEffect(() => {
-    loadPage(0);
-  }, [loadPage]);
+    fetchMoreRef.current();
+  }, []);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loadingRef.current) {
-          const next = page + 1;
-          setPage(next);
-          loadPage(next);
-        }
+        if (entries[0].isIntersecting) fetchMoreRef.current();
       },
       { rootMargin: "400px" }
     );
-
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [page, hasMore, loadPage]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-dark">
@@ -82,12 +87,20 @@ export default function Feed() {
           </div>
 
           {loading && (
-            <p className="text-center text-neon-secondary/70 py-8">Loading...</p>
+            <div className="flex justify-center py-8">
+              <div className="w-6 h-6 rounded-full border-2 border-neon-primary/30 border-t-neon-primary animate-spin" />
+            </div>
           )}
 
-          {!hasMore && dreams.length > 0 && (
+          {!loading && !hasMore && dreams.length > 0 && (
             <p className="text-center text-neon-secondary/50 text-sm py-8">
               You've reached the end.
+            </p>
+          )}
+
+          {!loading && dreams.length === 0 && (
+            <p className="text-center text-neon-secondary/40 text-sm py-16">
+              No dreams yet.
             </p>
           )}
 
