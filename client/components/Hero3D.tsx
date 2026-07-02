@@ -129,6 +129,9 @@ function setupScene(
       x.fillStyle = g; x.fillRect(0, 0, W, H);
       const t = new THREE.CanvasTexture(c);
       t.mapping = THREE.EquirectangularReflectionMapping;
+      // PMREMGenerator faz uploads via texImage3D no seu mip chain, e o WebGL2 não
+      // permite combinar isso com UNPACK_FLIP_Y_WEBGL — desligar flipY na fonte evita o aviso.
+      t.flipY = false;
       const pm = new THREE.PMREMGenerator(renderer);
       pm.compileEquirectangularShader();
       const env = pm.fromEquirectangular(t).texture;
@@ -289,12 +292,13 @@ function setupScene(
     window.addEventListener("pointermove", handlePointerMove);
 
     // ---- render loop ----
-    const clock = new THREE.Clock();
+    const timer = new THREE.Timer();
     let frameId: number | null = null;
     const uniqueMeshes = [goldMesh, crystalMesh];
 
-    const renderFrame = () => {
-      const t = clock.getElapsedTime();
+    const renderFrame = (now?: number) => {
+      timer.update(now);
+      const t = timer.getElapsed();
       for (let k = 0; k < instances.length; k++) {
         const o = instances[k];
         const dx = Math.sin(t * o.drift + o.phase) * 0.12;
@@ -332,8 +336,8 @@ function setupScene(
         frameId = null;
       }
     };
-    const tick = () => {
-      renderFrame();
+    const tick = (now?: number) => {
+      renderFrame(now);
       frameId = requestAnimationFrame(tick);
     };
     const start = () => {
