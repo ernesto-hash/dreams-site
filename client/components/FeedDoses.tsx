@@ -119,7 +119,7 @@ export default function FeedDoses() {
               </p>
             )}
             {item.text && (
-              <p className="font-orbitron text-white text-[15px] leading-relaxed line-clamp-6">
+              <p className="font-cinzel text-white text-[15px] leading-relaxed line-clamp-6">
                 "{item.text}"
               </p>
             )}

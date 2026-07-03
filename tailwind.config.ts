@@ -26,6 +26,7 @@ export default {
       },
       fontFamily: {
         orbitron: ["Cinzel", "serif"],
+        cinzel: ["Cinzel", "serif"],
         exo2: ["Inter", "sans-serif"],
         rajdhani: ["Inter", "sans-serif"],
       },
