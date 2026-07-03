@@ -10,8 +10,8 @@ import Milestones from "@/components/ui/Milestones";
 import TrendingDreams from "@/components/ui/TrendingDreams";
 import RelateButton from "@/components/ui/RelateButton";
 import Reveal from "@/components/ui/Reveal";
-import Hero3D from "@/components/Hero3D";
 import Globe3D from "@/components/Globe3D";
+import FeedDoses from "@/components/FeedDoses";
 
 import useSocialFeed from "@/hooks/useSocialFeed";
 import SocialNotifications from "@/components/live/SocialNotifications";
@@ -223,36 +223,6 @@ export default function Index() {
           <LiveActivity />
         </div>
 
-        {/* HERO */}
-        <section className="relative overflow-hidden min-h-[100dvh] sm:min-h-[80vh] flex flex-col justify-center items-center text-center gap-6 mb-8">
-          <Hero3D />
-
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 z-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(ellipse 70% 60% at center, rgba(10,10,10,0.72) 0%, rgba(10,10,10,0.4) 40%, rgba(10,10,10,0) 75%)",
-            }}
-          />
-
-          <div className="relative z-10 flex flex-col items-center gap-6">
-            <h1 className="font-orbitron font-bold text-4xl sm:text-5xl md:text-6xl max-w-4xl">
-              Dreams{" "}
-              <span className="bg-gradient-to-r from-neon-primary to-neon-secondary bg-clip-text text-transparent">
-                Are True
-              </span>
-            </h1>
-            <p className="text-neon-secondary max-w-xl text-sm sm:text-lg">
-              Monument of Dreams is a free digital space where people from all over the
-              world share their dreams and connect with others who share the same vision.
-            </p>
-            <Link to="/submit" className="neon-button animate-glow px-7 py-3 mt-4">
-              Submit My Dream — Free
-            </Link>
-          </div>
-        </section>
-
         {/* GLOBAL STATS */}
         <Reveal className="py-6 text-center space-y-2 mb-8">
           <h3 className="font-orbitron text-xl text-neon-primary">
@@ -274,9 +244,14 @@ export default function Index() {
         </Reveal>
 
         {/* WORLD MAP */}
-        <Reveal className="mb-12">
+        <Reveal className="mb-8">
           <Globe3D countries={activeCountries} />
         </Reveal>
+
+        {/* FEED DOSES — experiência central */}
+        <section className="mb-12">
+          <FeedDoses />
+        </section>
 
         {/* MILESTONES */}
         <Reveal className="mb-12">
