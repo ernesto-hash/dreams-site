@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { Share2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import Header from "@/components/Header";
 import Seo from "@/components/Seo";
+import ShareableCard from "@/components/ShareableCard";
 
 const PAGE_SIZE = 30;
 
@@ -17,6 +19,7 @@ export default function Discover() {
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<ContentItem | null>(null);
+  const [sharing, setSharing] = useState<ContentItem | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   const hasMoreRef = useRef(true);
@@ -112,6 +115,10 @@ export default function Discover() {
         <div ref={sentinelRef} className="h-px" />
       </main>
 
+      {sharing && (
+        <ShareableCard item={sharing} onClose={() => setSharing(null)} />
+      )}
+
       {/* Modal de detalhe */}
       {selected && (
         <div
@@ -145,6 +152,14 @@ export default function Discover() {
                 </span>
               )}
             </div>
+
+            <button
+              onClick={() => { setSharing(selected); setSelected(null); }}
+              aria-label="Partilhar"
+              className="absolute top-3 left-3 w-7 h-7 rounded-full bg-black/60 border border-neon-primary/20 flex items-center justify-center text-neon-secondary/50 hover:text-neon-primary transition-colors"
+            >
+              <Share2 size={13} />
+            </button>
 
             <button
               onClick={() => setSelected(null)}

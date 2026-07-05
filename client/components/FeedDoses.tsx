@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { Share2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import ShareableCard, { type ShareItem } from "@/components/ShareableCard";
 
 const PAGE_SIZE = 10;
 
@@ -22,6 +24,7 @@ type FeedRowProps = {
 export function FeedRow({ tema, label }: FeedRowProps) {
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sharingItem, setSharingItem] = useState<ShareItem | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
@@ -81,6 +84,10 @@ export function FeedRow({ tema, label }: FeedRowProps) {
   if (items.length === 0 && !loading) return null;
 
   return (
+    <>
+    {sharingItem && (
+      <ShareableCard item={sharingItem} onClose={() => setSharingItem(null)} />
+    )}
     <div className="w-full">
       {label && (
         <p className="font-cinzel text-neon-primary/70 text-[11px] uppercase tracking-[0.22em] px-4 mb-3">
@@ -128,6 +135,15 @@ export function FeedRow({ tema, label }: FeedRowProps) {
               </span>
             )}
 
+            {/* share button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); setSharingItem(item); }}
+              aria-label="Partilhar"
+              className="absolute bottom-4 right-4 z-20 w-8 h-8 rounded-full bg-black/55 border border-neon-primary/25 flex items-center justify-center text-neon-secondary/45 hover:text-neon-primary hover:border-neon-primary/60 transition-all"
+            >
+              <Share2 size={13} />
+            </button>
+
             <div className="relative z-10 p-4 pb-5">
               {item.tema && (
                 <p className="text-neon-primary/60 text-[10px] uppercase tracking-[0.2em] mb-2">
@@ -159,6 +175,7 @@ export function FeedRow({ tema, label }: FeedRowProps) {
         <div ref={sentinelRef} className="flex-shrink-0 w-1" />
       </div>
     </div>
+    </>
   );
 }
 

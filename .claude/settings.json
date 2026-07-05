@@ -27,7 +27,8 @@
       "PowerShell(cd \"c:\\\\Users\\\\ernes\\\\OneDrive\\\\Ambiente de Trabalho\\\\dreams-site-main\"; npm run build; Write-Host \"EXIT_CODE:$LASTEXITCODE\")",
       "PowerShell(Get-ChildItem -Path \"$env:USERPROFILE\" -Recurse -Filter \"dreams_content_images_v2.zip\" -ErrorAction SilentlyContinue | Select-Object FullName)",
       "PowerShell(Get-ChildItem -Path \"$env:USERPROFILE\\\\Downloads\", \"$env:USERPROFILE\\\\Desktop\", \"$env:USERPROFILE\\\\OneDrive\\\\Ambiente de Trabalho\" -Filter \"dreams_content_images_v2.zip\" -ErrorAction SilentlyContinue | Select-Object FullName)",
-      "PowerShell(netstat -ano)"
+      "PowerShell(netstat -ano)",
+      "PowerShell(cd \"C:\\\\Users\\\\ernes\\\\OneDrive\\\\Ambiente de Trabalho\\\\dreams-site-main\"; npx tsc --noEmit 2>&1 | Out-String | Select-String \"ShareableCard|FeedDoses\\\\.tsx|Discover\\\\.tsx|OnboardingSonho\" -AllMatches | ForEach-Object { $_.Matches } | Select-Object -ExpandProperty Value)"
     ],
     "additionalDirectories": [
       "C:\\Users\\ernes\\OneDrive\\Ambiente de Trabalho\\dreams-site-main\\public\\audio"
