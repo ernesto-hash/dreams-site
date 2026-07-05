@@ -13,6 +13,7 @@ import { AudioProvider } from "@/context/AudioContext";
 import { AuthProvider } from "@/context/AuthContext";
 import AmbientPlayer from "@/components/AmbientPlayer";
 import AnimatedBackground from "@/components/AnimatedBackground";
+import BottomNav from "@/components/BottomNav";
 
 const Index = lazy(() => import("./pages/Index"));
 const Gallery = lazy(() => import("./pages/Gallery"));
@@ -33,6 +34,7 @@ const DreamMeanings = lazy(() => import("./pages/DreamMeanings"));
 const Feed = lazy(() => import("./pages/Feed"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+const Discover = lazy(() => import("./pages/Discover"));
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,7 @@ function App() {
           <BrowserRouter>
             <AnimatedBackground />
             <AmbientPlayer />
+            <BottomNav />
             <Suspense fallback={null}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -69,6 +72,7 @@ function App() {
                 <Route path="/dreams/:category" element={<CategoryPage />} />
                 <Route path="/dream-meanings" element={<DreamMeanings />} />
                 <Route path="/feed" element={<Feed />} />
+                <Route path="/descobrir" element={<Discover />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="*" element={<NotFound />} />

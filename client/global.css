@@ -6,6 +6,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* reserva espaço para a bottom nav em mobile */
+@media (max-width: 639px) {
+  body {
+    padding-bottom: 4rem;
+  }
+}
+
 @layer base {
   /**
    * Tailwind CSS theme for Digital Monument of Dreams
