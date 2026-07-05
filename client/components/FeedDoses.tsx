@@ -14,11 +14,16 @@ type ContentItem = {
   created_at: string;
 };
 
-export default function FeedDoses() {
+type FeedRowProps = {
+  tema?: string;
+  label?: string;
+};
+
+export function FeedRow({ tema, label }: FeedRowProps) {
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   const hasMoreRef = useRef(true);
   const offsetRef = useRef(0);
@@ -31,19 +36,19 @@ export default function FeedDoses() {
     const from = offsetRef.current;
     const to = from + PAGE_SIZE - 1;
 
-    const { data, error } = await supabase
+    const base = supabase
       .from("content_bank")
       .select("id, type, content_url, text, tema, is_ai_generated, active, created_at")
       .eq("active", true)
       .order("created_at", { ascending: false })
       .range(from, to);
 
+    const { data, error } = await (tema ? base.eq("tema", tema) : base);
+
     if (!error && data) {
       setItems((prev) => (from === 0 ? data : [...prev, ...data]));
       offsetRef.current = from + PAGE_SIZE;
-      const more = data.length === PAGE_SIZE;
-      hasMoreRef.current = more;
-      setHasMore(more);
+      hasMoreRef.current = data.length === PAGE_SIZE;
     }
 
     loadingRef.current = false;
@@ -59,14 +64,16 @@ export default function FeedDoses() {
     fetchMoreRef.current();
   }, []);
 
+  // sentinel dentro do scroll container para detectar fim horizontal
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+    const container = scrollRef.current;
+    if (!sentinel || !container) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) fetchMoreRef.current();
       },
-      { rootMargin: "400px" }
+      { root: container, rootMargin: "0px 300px 0px 0px" }
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
@@ -75,78 +82,95 @@ export default function FeedDoses() {
   if (items.length === 0 && !loading) return null;
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col gap-5 py-6">
-      {items.map((item) => (
-        <article
-          key={item.id}
-          className="relative rounded-2xl overflow-hidden bg-black border border-neon-primary/20 min-h-[440px] flex flex-col justify-end shadow-lg"
-        >
-          {item.content_url ? (
-            <img
-              src={item.content_url}
-              alt={item.tema || "dream"}
-              className="absolute inset-0 w-full h-full object-cover opacity-55"
-              loading="lazy"
-            />
-          ) : (
+    <div className="w-full">
+      {label && (
+        <p className="font-cinzel text-neon-primary/70 text-[11px] uppercase tracking-[0.22em] px-4 mb-3">
+          {label}
+        </p>
+      )}
+
+      <div
+        ref={scrollRef}
+        className="flex gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory px-4 pb-2"
+      >
+        {items.map((item) => (
+          <article
+            key={item.id}
+            className="relative flex-shrink-0 w-[75vw] max-w-[320px] h-[480px] rounded-2xl overflow-hidden bg-black border border-neon-primary/20 snap-start shadow-lg flex flex-col justify-end"
+          >
+            {item.content_url ? (
+              <img
+                src={item.content_url}
+                alt={item.tema || "dream"}
+                className="absolute inset-0 w-full h-full object-cover opacity-55"
+                loading="lazy"
+              />
+            ) : (
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(ellipse 80% 70% at 50% 30%, rgba(212,175,55,0.15) 0%, #080808 75%)",
+                }}
+              />
+            )}
+
             <div
               className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(ellipse 80% 70% at 50% 30%, rgba(212,175,55,0.15) 0%, #080808 75%)",
+                  "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.08) 100%)",
               }}
             />
-          )}
 
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.08) 100%)",
-            }}
-          />
-
-          {item.is_ai_generated && (
-            <span className="absolute top-3 right-3 z-10 text-[10px] font-semibold text-neon-primary bg-black/70 border border-neon-primary/40 px-2 py-0.5 rounded-full tracking-wide">
-              ✦ Curated
-            </span>
-          )}
-
-          <div className="relative z-10 p-5 pb-6">
-            {item.tema && (
-              <p className="text-neon-primary/60 text-[10px] uppercase tracking-[0.2em] mb-2">
-                {item.tema}
-              </p>
+            {item.is_ai_generated && (
+              <span className="absolute top-3 right-3 z-10 text-[10px] font-semibold text-neon-primary bg-black/70 border border-neon-primary/40 px-2 py-0.5 rounded-full tracking-wide">
+                ✦ Curated
+              </span>
             )}
-            {item.text && (
-              <p className="font-cinzel text-white text-[15px] leading-relaxed line-clamp-6">
-                "{item.text}"
+
+            <div className="relative z-10 p-4 pb-5">
+              {item.tema && (
+                <p className="text-neon-primary/60 text-[10px] uppercase tracking-[0.2em] mb-2">
+                  {item.tema}
+                </p>
+              )}
+              {item.text && (
+                <p className="font-cinzel text-white text-[14px] leading-relaxed line-clamp-5">
+                  "{item.text}"
+                </p>
+              )}
+              <p className="text-neon-secondary/35 text-[10px] mt-3">
+                {new Date(item.created_at).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </p>
-            )}
-            <p className="text-neon-secondary/35 text-[10px] mt-3">
-              {new Date(item.created_at).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </p>
+            </div>
+          </article>
+        ))}
+
+        {loading && (
+          <div className="flex-shrink-0 w-14 flex items-center justify-center">
+            <div className="w-5 h-5 rounded-full border-2 border-neon-primary/30 border-t-neon-primary animate-spin" />
           </div>
-        </article>
-      ))}
+        )}
 
-      {loading && (
-        <div className="flex justify-center py-6">
-          <div className="w-5 h-5 rounded-full border-2 border-neon-primary/30 border-t-neon-primary animate-spin" />
-        </div>
-      )}
+        <div ref={sentinelRef} className="flex-shrink-0 w-1" />
+      </div>
+    </div>
+  );
+}
 
-      {!loading && !hasMore && items.length > 0 && (
-        <p className="text-center text-neon-secondary/35 text-[11px] py-6 tracking-widest uppercase">
-          — End —
-        </p>
-      )}
-
-      <div ref={sentinelRef} className="h-px" />
+export default function FeedDoses() {
+  return (
+    <div className="w-full py-4 space-y-10">
+      <FeedRow label="Latest Dreams" />
+      {/* exemplo de fileira futura por tema:
+          <FeedRow tema="flying" label="Flying Dreams" />
+          <FeedRow tema="lucid"  label="Lucid Dreams"  />
+      */}
     </div>
   );
 }
