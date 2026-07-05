@@ -64,7 +64,6 @@ export function FeedRow({ tema, label }: FeedRowProps) {
     fetchMoreRef.current();
   }, []);
 
-  // sentinel dentro do scroll container para detectar fim horizontal
   useEffect(() => {
     const sentinel = sentinelRef.current;
     const container = scrollRef.current;
@@ -163,14 +162,49 @@ export function FeedRow({ tema, label }: FeedRowProps) {
   );
 }
 
-export default function FeedDoses() {
+const LABEL_MAP: Record<string, string> = {
+  ambição:          "Ambição",
+  disciplina:       "Disciplina",
+  metas:            "Metas",
+  responsabilidade: "Responsabilidade",
+};
+
+const ALL_TEMAS = ["ambição", "disciplina", "metas", "responsabilidade"];
+
+type FeedDosesProps = {
+  userTema?: string | null;
+  onResetTema?: () => void;
+};
+
+export default function FeedDoses({ userTema, onResetTema }: FeedDosesProps) {
+  if (userTema) {
+    const others = ALL_TEMAS.filter((t) => t !== userTema);
+    return (
+      <div className="w-full py-4 space-y-10">
+        {/* header "Para Ti" com botão Mudar */}
+        <div className="flex items-center justify-between px-4">
+          <p className="font-cinzel text-neon-primary/70 text-[11px] uppercase tracking-[0.22em]">
+            Para Ti · {LABEL_MAP[userTema] ?? userTema}
+          </p>
+          <button
+            onClick={onResetTema}
+            className="text-[10px] text-neon-secondary/35 hover:text-neon-secondary/70 transition-colors underline underline-offset-2"
+          >
+            Mudar
+          </button>
+        </div>
+        <FeedRow tema={userTema} />
+
+        {others.map((t) => (
+          <FeedRow key={t} tema={t} label={LABEL_MAP[t]} />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="w-full py-4 space-y-10">
       <FeedRow label="Latest Dreams" />
-      {/* exemplo de fileira futura por tema:
-          <FeedRow tema="flying" label="Flying Dreams" />
-          <FeedRow tema="lucid"  label="Lucid Dreams"  />
-      */}
     </div>
   );
 }

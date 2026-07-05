@@ -12,6 +12,7 @@ import RelateButton from "@/components/ui/RelateButton";
 import Reveal from "@/components/ui/Reveal";
 import Globe3D from "@/components/Globe3D";
 import FeedDoses from "@/components/FeedDoses";
+import OnboardingSonho from "@/components/OnboardingSonho";
 
 import useSocialFeed from "@/hooks/useSocialFeed";
 import SocialNotifications from "@/components/live/SocialNotifications";
@@ -42,6 +43,25 @@ export default function Index() {
   const [activeCountries, setActiveCountries] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDreamPopup, setShowDreamPopup] = useState(false);
+
+  const [onboardingDone, setOnboardingDone] = useState(
+    () => !!localStorage.getItem("dreams_onboarding_done")
+  );
+  const [userTema, setUserTema] = useState<string | null>(
+    () => localStorage.getItem("dreams_user_tema")
+  );
+
+  const handleOnboardingComplete = (tema: string) => {
+    setOnboardingDone(true);
+    setUserTema(tema);
+  };
+
+  const handleResetTema = () => {
+    localStorage.removeItem("dreams_onboarding_done");
+    localStorage.removeItem("dreams_user_tema");
+    setOnboardingDone(false);
+    setUserTema(null);
+  };
 
   const events: LiveEvent[] = useSocialFeed() || [];
 
@@ -183,6 +203,9 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-dark overflow-x-hidden">
+      {!onboardingDone && (
+        <OnboardingSonho onComplete={handleOnboardingComplete} />
+      )}
       <Seo
         title="Monument of Dreams — Share Your Dream Free, Forever"
         description="Monument of Dreams is a free digital archive of human dreams. Share yours and connect with people around the world who dream the same thing."
@@ -250,7 +273,7 @@ export default function Index() {
 
         {/* FEED DOSES — experiência central */}
         <section className="mb-12">
-          <FeedDoses />
+          <FeedDoses userTema={userTema} onResetTema={handleResetTema} />
         </section>
 
         {/* MILESTONES */}

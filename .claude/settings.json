@@ -26,7 +26,8 @@
       "Bash(mv \"public/audio/ambient.mp3.mp3\" \"public/audio/ambient.mp3\")",
       "PowerShell(cd \"c:\\\\Users\\\\ernes\\\\OneDrive\\\\Ambiente de Trabalho\\\\dreams-site-main\"; npm run build; Write-Host \"EXIT_CODE:$LASTEXITCODE\")",
       "PowerShell(Get-ChildItem -Path \"$env:USERPROFILE\" -Recurse -Filter \"dreams_content_images_v2.zip\" -ErrorAction SilentlyContinue | Select-Object FullName)",
-      "PowerShell(Get-ChildItem -Path \"$env:USERPROFILE\\\\Downloads\", \"$env:USERPROFILE\\\\Desktop\", \"$env:USERPROFILE\\\\OneDrive\\\\Ambiente de Trabalho\" -Filter \"dreams_content_images_v2.zip\" -ErrorAction SilentlyContinue | Select-Object FullName)"
+      "PowerShell(Get-ChildItem -Path \"$env:USERPROFILE\\\\Downloads\", \"$env:USERPROFILE\\\\Desktop\", \"$env:USERPROFILE\\\\OneDrive\\\\Ambiente de Trabalho\" -Filter \"dreams_content_images_v2.zip\" -ErrorAction SilentlyContinue | Select-Object FullName)",
+      "PowerShell(netstat -ano)"
     ],
     "additionalDirectories": [
       "C:\\Users\\ernes\\OneDrive\\Ambiente de Trabalho\\dreams-site-main\\public\\audio"
