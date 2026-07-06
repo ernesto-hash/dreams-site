@@ -44,6 +44,7 @@ export default function Register() {
   const [country, setCountry] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [checkEmail, setCheckEmail] = useState(false);
 
   const validate = (): string => {
     const emailErr = getErrorMessage("email", email);
@@ -75,6 +76,12 @@ export default function Register() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
+        options: {
+          data: {
+            username: username.trim(),
+            country: country.trim(),
+          },
+        },
       });
 
       if (signUpError) {
@@ -87,19 +94,10 @@ export default function Register() {
         return;
       }
 
-      const { error: profileError } = await supabase.from("profiles").insert([
-        {
-          id: data.user.id,
-          username: username.trim(),
-          country: country.trim(),
-          created_at: new Date().toISOString(),
-        },
-      ]);
-
-      if (profileError) {
-        setError(
-          `[${profileError.code}] ${profileError.message}${profileError.hint ? " — " + profileError.hint : ""}`
-        );
+      if (!data.session) {
+        // confirmação de email ativa — sem sessão ainda; o perfil já foi
+        // criado pelo trigger handle_new_user, só falta confirmar o email
+        setCheckEmail(true);
         return;
       }
 
@@ -133,6 +131,18 @@ export default function Register() {
             </p>
           </div>
 
+          {checkEmail ? (
+            <div className="card-dark p-8 rounded-xl text-center space-y-4">
+              <p className="font-orbitron text-xl text-neon-primary">Check your email</p>
+              <p className="text-neon-secondary">
+                We sent a confirmation link to <span className="text-white">{email.trim()}</span>.
+                Confirm your email to log in.
+              </p>
+              <Link to="/login" className="neon-button inline-block px-6 py-2 mt-2">
+                Go to Login
+              </Link>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="card-dark p-8 rounded-xl space-y-6">
             <div>
               <label className="block text-sm text-neon-secondary mb-2">
@@ -232,6 +242,7 @@ export default function Register() {
               </Link>
             </p>
           </form>
+          )}
         </div>
       </main>
 
