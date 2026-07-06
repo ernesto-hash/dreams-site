@@ -112,12 +112,12 @@ async function drawCard(
   ctx.fillRect(0, H * 0.42, W, H * 0.58);
 
   // ── load font ────────────────────────────────────────────────────
-  try { await document.fonts.load("700 56px Cinzel"); } catch { /* already loaded */ }
+  try { await document.fonts.load("700 56px Inter"); } catch { /* already loaded */ }
 
   const PAD = 70;
 
   // ── brand top-left ────────────────────────────────────────────────
-  ctx.font         = "600 32px Cinzel, serif";
+  ctx.font         = "600 32px Inter, sans-serif";
   ctx.fillStyle    = "rgba(212,175,55,0.75)";
   ctx.textAlign    = "left";
   ctx.textBaseline = "alphabetic";
@@ -135,7 +135,7 @@ async function drawCard(
   if (item.text) {
     const fs     = fmt === "square" ? 50 : 54;
     const lineH  = fs * 1.42;
-    ctx.font         = `700 ${fs}px Cinzel, serif`;
+    ctx.font         = `700 ${fs}px Inter, sans-serif`;
     ctx.fillStyle    = "#FFFFFF";
     ctx.textAlign    = "center";
     ctx.textBaseline = "alphabetic";
@@ -153,7 +153,7 @@ async function drawCard(
   }
 
   // ── tema label ────────────────────────────────────────────────────
-  ctx.font         = "400 26px Cinzel, serif";
+  ctx.font         = "400 26px Inter, sans-serif";
   ctx.textAlign    = "center";
   ctx.textBaseline = "alphabetic";
   if (item.tema) {

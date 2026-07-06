@@ -25,8 +25,9 @@ export default {
         },
       },
       fontFamily: {
-        orbitron: ["Cinzel", "serif"],
-        cinzel: ["Cinzel", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        orbitron: ["Inter", "sans-serif"],
+        cinzel: ["Inter", "sans-serif"],
         exo2: ["Inter", "sans-serif"],
         rajdhani: ["Inter", "sans-serif"],
       },
