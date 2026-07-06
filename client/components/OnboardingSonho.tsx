@@ -8,11 +8,11 @@ const DONE_KEY = "dreams_onboarding_done";
 const TEMA_KEY = "dreams_user_tema";
 
 const OPTIONS = [
-  { icon: Flame,    label: "Rico",           sub: "Conquista & Riqueza",    tema: "ambição"          },
-  { icon: Target,   label: "Atleta / Livre", sub: "Metas & Movimento",      tema: "metas"            },
-  { icon: Zap,      label: "Criador",        sub: "Criatividade & Impacto", tema: "ambição"          },
-  { icon: BookOpen, label: "Disciplinado",   sub: "Foco & Consistência",    tema: "disciplina"       },
-  { icon: Shield,   label: "Responsável",    sub: "Estrutura & Visão",      tema: "responsabilidade" },
+  { icon: Flame,    label: "Wealth",       sub: "Ambition & Money",     tema: "money"      },
+  { icon: Target,   label: "Achiever",     sub: "Goals & Momentum",     tema: "goals"      },
+  { icon: Zap,      label: "Builder",      sub: "Creativity & Impact",  tema: "ambition"   },
+  { icon: BookOpen, label: "Disciplined",  sub: "Focus & Consistency",  tema: "discipline" },
+  { icon: Shield,   label: "Grounded",     sub: "Mindset & Family",     tema: "mindset"    },
 ] as const;
 
 type Step = "tema" | "push";
@@ -74,10 +74,10 @@ export default function OnboardingSonho({ onComplete }: Props) {
               Monument of Dreams
             </p>
             <h1 className="font-cinzel text-2xl sm:text-3xl text-white leading-snug">
-              O que queres ser?
+              What do you want to become?
             </h1>
             <p className="text-neon-secondary/50 text-[13px]">
-              Escolhe o teu caminho
+              Choose your path
             </p>
           </div>
 
@@ -109,7 +109,7 @@ export default function OnboardingSonho({ onComplete }: Props) {
           </div>
 
           <p className="text-neon-secondary/25 text-[11px] text-center">
-            Pode ser alterado mais tarde
+            You can change this later
           </p>
         </div>
       )}
@@ -123,10 +123,10 @@ export default function OnboardingSonho({ onComplete }: Props) {
 
           <div className="space-y-2">
             <h2 className="font-cinzel text-xl text-white">
-              Ativar lembretes diários?
+              Turn on daily reminders?
             </h2>
             <p className="text-neon-secondary/50 text-[13px] leading-relaxed max-w-xs">
-              Recebe uma dose de inspiração por dia — directamente no teu ecrã, sem spam.
+              Get one dose of inspiration a day — straight to your screen, no spam.
             </p>
           </div>
 
@@ -141,7 +141,7 @@ export default function OnboardingSonho({ onComplete }: Props) {
               ) : (
                 <Bell size={16} strokeWidth={1.8} />
               )}
-              {pushStatus === "subscribed" ? "Ativado!" : "Sim, quero receber"}
+              {pushStatus === "subscribed" ? "Enabled!" : "Yes, notify me"}
             </button>
 
             <button
@@ -149,18 +149,18 @@ export default function OnboardingSonho({ onComplete }: Props) {
               className="w-full py-3 text-neon-secondary/35 font-cinzel text-[11px] uppercase tracking-[0.12em] hover:text-neon-secondary/60 transition-colors flex items-center justify-center gap-1.5"
             >
               <BellOff size={13} strokeWidth={1.5} />
-              Agora não
+              Not now
             </button>
           </div>
 
           {pushStatus === "denied" && (
             <p className="text-amber-400/70 text-[11px]">
-              Notificações bloqueadas no browser. Podes ativar mais tarde nas definições do browser.
+              Notifications are blocked in your browser. You can enable them later in your browser settings.
             </p>
           )}
           {pushStatus === "unsupported" && (
             <p className="text-neon-secondary/40 text-[11px]">
-              O teu browser não suporta notificações push.
+              Your browser doesn't support push notifications.
             </p>
           )}
         </div>

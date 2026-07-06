@@ -9,9 +9,9 @@ const PAGE_SIZE = 30;
 
 type ContentItem = {
   id: string;
-  content_url: string;
-  text: string | null;
-  tema: string | null;
+  image_url: string;
+  quote: string | null;
+  category: string | null;
   is_ai_generated: boolean;
 };
 
@@ -35,9 +35,9 @@ export default function Discover() {
 
     const { data, error } = await supabase
       .from("content_bank")
-      .select("id, content_url, text, tema, is_ai_generated")
-      .eq("active", true)
-      .not("content_url", "is", null)
+      .select("id, image_url, quote, category, is_ai_generated")
+      .eq("status", "live")
+      .not("image_url", "is", null)
       .order("created_at", { ascending: false })
       .range(from, to);
 
@@ -97,8 +97,8 @@ export default function Discover() {
               className="relative aspect-square overflow-hidden bg-dark-card focus:outline-none"
             >
               <img
-                src={item.content_url}
-                alt={item.tema || "dream"}
+                src={item.image_url}
+                alt={item.category || "dream"}
                 className="w-full h-full object-cover transition-opacity duration-300 hover:opacity-80"
                 loading="lazy"
               />
@@ -130,20 +130,20 @@ export default function Discover() {
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={selected.content_url}
-              alt={selected.tema || "dream"}
+              src={selected.image_url}
+              alt={selected.category || "dream"}
               className="w-full aspect-square object-cover"
             />
 
             <div className="p-5">
-              {selected.tema && (
+              {selected.category && (
                 <p className="text-neon-primary/60 text-[10px] uppercase tracking-[0.2em] mb-2">
-                  {selected.tema}
+                  {selected.category}
                 </p>
               )}
-              {selected.text && (
+              {selected.quote && (
                 <p className="font-cinzel text-white text-[14px] leading-relaxed">
-                  "{selected.text}"
+                  "{selected.quote}"
                 </p>
               )}
               {selected.is_ai_generated && (

@@ -3,9 +3,9 @@ import { Download, Share2, X } from "lucide-react";
 
 export type ShareItem = {
   id: string;
-  content_url: string | null;
-  text: string | null;
-  tema: string | null;
+  image_url: string | null;
+  quote: string | null;
+  category: string | null;
   is_ai_generated: boolean;
 };
 
@@ -83,8 +83,8 @@ async function drawCard(
   ctx.fillRect(0, 0, W, H);
 
   // ── image (via fetch→blob to avoid canvas taint) ─────────────────
-  if (item.content_url) {
-    const img = await loadImageBlob(item.content_url);
+  if (item.image_url) {
+    const img = await loadImageBlob(item.image_url);
     if (img && img.naturalWidth > 0) {
       const scale = Math.max(W / img.naturalWidth, H / img.naturalHeight);
       const dw = img.naturalWidth  * scale;
@@ -132,7 +132,7 @@ async function drawCard(
   ctx.stroke();
 
   // ── main text ─────────────────────────────────────────────────────
-  if (item.text) {
+  if (item.quote) {
     const fs     = fmt === "square" ? 50 : 54;
     const lineH  = fs * 1.42;
     ctx.font         = `700 ${fs}px Inter, sans-serif`;
@@ -140,7 +140,7 @@ async function drawCard(
     ctx.textAlign    = "center";
     ctx.textBaseline = "alphabetic";
     const maxTW = W - PAD * 2.2;
-    const lines  = wrapLines(ctx, `"${item.text}"`, maxTW);
+    const lines  = wrapLines(ctx, `"${item.quote}"`, maxTW);
     // clamp to 6 lines max
     const visible = lines.slice(0, 6);
     if (lines.length > 6) visible[5] = visible[5].replace(/[^…]$/, "…");
@@ -152,13 +152,13 @@ async function drawCard(
     }
   }
 
-  // ── tema label ────────────────────────────────────────────────────
+  // ── category label ────────────────────────────────────────────────
   ctx.font         = "400 26px Inter, sans-serif";
   ctx.textAlign    = "center";
   ctx.textBaseline = "alphabetic";
-  if (item.tema) {
+  if (item.category) {
     ctx.fillStyle = "#D4AF37";
-    ctx.fillText(item.tema.toUpperCase(), W / 2, H - PAD + 4);
+    ctx.fillText(item.category.toUpperCase(), W / 2, H - PAD + 4);
   } else {
     ctx.fillStyle = "rgba(212,175,55,0.35)";
     ctx.fillText("monumentofdreams.com", W / 2, H - PAD + 4);
@@ -217,7 +217,7 @@ export default function ShareableCard({ item, onClose }: Props) {
       await (navigator as Navigator & { share?: (d: ShareData) => Promise<void> }).share?.({
         files: [file],
         title: "Monument of Dreams",
-        text: item.text ? `"${item.text}"` : "Monument of Dreams",
+        text: item.quote ? `"${item.quote}"` : "Monument of Dreams",
       });
     } catch { /* cancelled */ }
   };

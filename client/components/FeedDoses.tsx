@@ -8,20 +8,20 @@ const PAGE_SIZE = 10;
 type ContentItem = {
   id: string;
   type: string;
-  content_url: string | null;
-  text: string | null;
-  tema: string | null;
+  image_url: string | null;
+  quote: string | null;
+  category: string | null;
   is_ai_generated: boolean;
-  active: boolean;
+  status: string;
   created_at: string;
 };
 
 type FeedRowProps = {
-  tema?: string;
+  category?: string;
   label?: string;
 };
 
-export function FeedRow({ tema, label }: FeedRowProps) {
+export function FeedRow({ category, label }: FeedRowProps) {
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [sharingItem, setSharingItem] = useState<ShareItem | null>(null);
@@ -41,12 +41,12 @@ export function FeedRow({ tema, label }: FeedRowProps) {
 
     const base = supabase
       .from("content_bank")
-      .select("id, type, content_url, text, tema, is_ai_generated, active, created_at")
-      .eq("active", true)
+      .select("id, type, image_url, quote, category, is_ai_generated, status, created_at")
+      .eq("status", "live")
       .order("created_at", { ascending: false })
       .range(from, to);
 
-    const { data, error } = await (tema ? base.eq("tema", tema) : base);
+    const { data, error } = await (category ? base.eq("category", category) : base);
 
     if (!error && data) {
       setItems((prev) => (from === 0 ? data : [...prev, ...data]));
@@ -104,10 +104,10 @@ export function FeedRow({ tema, label }: FeedRowProps) {
             key={item.id}
             className="relative flex-shrink-0 w-[75vw] max-w-[320px] h-[480px] rounded-2xl overflow-hidden bg-black border border-neon-primary/20 snap-start shadow-lg flex flex-col justify-end"
           >
-            {item.content_url ? (
+            {item.image_url ? (
               <img
-                src={item.content_url}
-                alt={item.tema || "dream"}
+                src={item.image_url}
+                alt={item.category || "dream"}
                 className="absolute inset-0 w-full h-full object-cover opacity-55"
                 loading="lazy"
               />
@@ -138,21 +138,21 @@ export function FeedRow({ tema, label }: FeedRowProps) {
             {/* share button */}
             <button
               onClick={(e) => { e.stopPropagation(); setSharingItem(item); }}
-              aria-label="Partilhar"
+              aria-label="Share"
               className="absolute bottom-4 right-4 z-20 w-8 h-8 rounded-full bg-black/55 border border-neon-primary/25 flex items-center justify-center text-neon-secondary/45 hover:text-neon-primary hover:border-neon-primary/60 transition-all"
             >
               <Share2 size={13} />
             </button>
 
             <div className="relative z-10 p-4 pb-5">
-              {item.tema && (
+              {item.category && (
                 <p className="text-neon-primary/60 text-[10px] uppercase tracking-[0.2em] mb-2">
-                  {item.tema}
+                  {item.category}
                 </p>
               )}
-              {item.text && (
+              {item.quote && (
                 <p className="font-cinzel text-white text-[14px] leading-relaxed line-clamp-5">
-                  "{item.text}"
+                  "{item.quote}"
                 </p>
               )}
               <p className="text-neon-secondary/35 text-[10px] mt-3">
@@ -180,13 +180,16 @@ export function FeedRow({ tema, label }: FeedRowProps) {
 }
 
 const LABEL_MAP: Record<string, string> = {
-  ambição:          "Ambição",
-  disciplina:       "Disciplina",
-  metas:            "Metas",
-  responsabilidade: "Responsabilidade",
+  ambition: "Ambition",
+  discipline: "Discipline",
+  money: "Money",
+  financial_freedom: "Financial Freedom",
+  family: "Family",
+  goals: "Goals",
+  mindset: "Mindset",
 };
 
-const ALL_TEMAS = ["ambição", "disciplina", "metas", "responsabilidade"];
+const ALL_CATEGORIES = ["ambition", "discipline", "money", "financial_freedom", "family", "goals", "mindset"];
 
 type FeedDosesProps = {
   userTema?: string | null;
@@ -195,25 +198,25 @@ type FeedDosesProps = {
 
 export default function FeedDoses({ userTema, onResetTema }: FeedDosesProps) {
   if (userTema) {
-    const others = ALL_TEMAS.filter((t) => t !== userTema);
+    const others = ALL_CATEGORIES.filter((c) => c !== userTema);
     return (
       <div className="w-full py-4 space-y-10">
-        {/* header "Para Ti" com botão Mudar */}
+        {/* header "For You" with Change button */}
         <div className="flex items-center justify-between px-4">
           <p className="font-cinzel text-neon-primary/70 text-[11px] uppercase tracking-[0.22em]">
-            Para Ti · {LABEL_MAP[userTema] ?? userTema}
+            For You · {LABEL_MAP[userTema] ?? userTema}
           </p>
           <button
             onClick={onResetTema}
             className="text-[10px] text-neon-secondary/35 hover:text-neon-secondary/70 transition-colors underline underline-offset-2"
           >
-            Mudar
+            Change
           </button>
         </div>
-        <FeedRow tema={userTema} />
+        <FeedRow category={userTema} />
 
-        {others.map((t) => (
-          <FeedRow key={t} tema={t} label={LABEL_MAP[t]} />
+        {others.map((c) => (
+          <FeedRow key={c} category={c} label={LABEL_MAP[c]} />
         ))}
       </div>
     );
