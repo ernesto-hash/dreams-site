@@ -35,6 +35,7 @@ const Feed = lazy(() => import("./pages/Feed"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Discover = lazy(() => import("./pages/Discover"));
+const CuradoriaAdmin = lazy(() => import("./pages/CuradoriaAdmin"));
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/dream-meanings" element={<DreamMeanings />} />
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/descobrir" element={<Discover />} />
+                <Route path="/admin/curadoria" element={<CuradoriaAdmin />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="*" element={<NotFound />} />
