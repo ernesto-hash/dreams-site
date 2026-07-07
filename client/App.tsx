@@ -25,6 +25,7 @@ const Success = lazy(() => import("./pages/Success"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const DreamPage = lazy(() => import("./pages/DreamPage"));
 const DosePage = lazy(() => import("./pages/DosePage"));
+const DoseCategoryPage = lazy(() => import("./pages/DoseCategoryPage"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -63,6 +64,7 @@ function AnimatedRoutes() {
         <Route path="/dreams-that-come-true" element={<PageTransition><DreamsThatComeTrue /></PageTransition>} />
         <Route path="/dreams/:category" element={<PageTransition><CategoryPage /></PageTransition>} />
         <Route path="/dose/:slug" element={<PageTransition><DosePage /></PageTransition>} />
+        <Route path="/category/:slug" element={<PageTransition><DoseCategoryPage /></PageTransition>} />
         <Route path="/dream-meanings" element={<PageTransition><DreamMeanings /></PageTransition>} />
         <Route path="/feed" element={<PageTransition><Feed /></PageTransition>} />
         <Route path="/descobrir" element={<PageTransition><Discover /></PageTransition>} />

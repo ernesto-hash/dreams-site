@@ -11,6 +11,9 @@
   "functions": {
     "api/dose.ts": {
       "includeFiles": "dist/spa/index.html"
+    },
+    "api/category.ts": {
+      "includeFiles": "dist/spa/index.html"
     }
   },
 
@@ -22,6 +25,10 @@
     {
       "source": "/dose/:slug",
       "destination": "/api/dose?slug=:slug"
+    },
+    {
+      "source": "/category/:slug",
+      "destination": "/api/category?category=:slug"
     },
     {
       "source": "/(.*)",
