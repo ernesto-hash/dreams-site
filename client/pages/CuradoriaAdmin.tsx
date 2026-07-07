@@ -17,7 +17,7 @@ type ContentRow = {
 const COLUMNS = "id, type, quote, category, image_url, is_ai_generated, status, created_at";
 
 export default function CuradoriaAdmin() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [live, setLive] = useState<ContentRow[]>([]);
   const [hidden, setHidden] = useState<ContentRow[]>([]);
   const [loadingRows, setLoadingRows] = useState(true);
@@ -35,8 +35,8 @@ export default function CuradoriaAdmin() {
   }
 
   useEffect(() => {
-    if (user) loadRows();
-  }, [user]);
+    if (profile?.is_admin) loadRows();
+  }, [profile]);
 
   async function setStatus(id: string, status: "live" | "hidden") {
     setError("");
@@ -65,6 +65,16 @@ export default function CuradoriaAdmin() {
         <p className="font-cinzel text-neon-primary text-xl">Restricted access</p>
         <p className="text-neon-secondary/70">You need to be logged in to view curation.</p>
         <Link to="/login" className="neon-button px-6 py-2">Login</Link>
+      </div>
+    );
+  }
+
+  if (!profile?.is_admin) {
+    return (
+      <div className="min-h-screen bg-gradient-dark flex flex-col items-center justify-center gap-4 text-center px-4">
+        <p className="font-cinzel text-neon-primary text-xl">Not authorized</p>
+        <p className="text-neon-secondary/70">Your account doesn't have access to curation.</p>
+        <Link to="/" className="neon-button px-6 py-2">Back to site</Link>
       </div>
     );
   }

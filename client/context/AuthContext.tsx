@@ -10,6 +10,7 @@ type Profile = {
   bio: string | null;
   contact: string | null;
   is_premium: boolean;
+  is_admin: boolean;
   created_at: string;
 };
 
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loadProfile(userId: string) {
     const { data } = await supabase
       .from("profiles")
-      .select("id, username, country, avatar, bio, contact, is_premium, created_at")
+      .select("id, username, country, avatar, bio, contact, is_premium, is_admin, created_at")
       .eq("id", userId)
       .single();
 
@@ -50,10 +51,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: activeSession } }) => {
+    supabase.auth.getSession().then(async ({ data: { session: activeSession } }) => {
       setSession(activeSession);
       setUser(activeSession?.user ?? null);
-      if (activeSession?.user) loadProfile(activeSession.user.id);
+      if (activeSession?.user) await loadProfile(activeSession.user.id);
       setLoading(false);
     });
 
