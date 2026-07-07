@@ -1,13 +1,18 @@
 /**
- * Semeia content_bank com fotos verticais reais da Pexels API + citações
- * curadas de quotes/<category>.json. Não apaga nada — só insere linhas novas
- * (status='live' por defeito), evitando pexels_id e quotes já usados.
+ * Seeds content_bank with real vertical Pexels photos + curated quotes from
+ * quotes/<category>.json. Never deletes anything — only inserts new rows
+ * (status='live' by default), skipping pexels_id and quotes already used.
  *
- * Assume que a migração do schema (tema→category, text→quote,
- * content_url→image_url, + pexels_id/image_author/aspect) já correu.
+ * Bounded for daily automation: inserts a single batch of DAILY_BATCH_MIN..
+ * DAILY_BATCH_MAX doses per run (round-robin across categories), not a full
+ * ~100-row seed. Safe to run once a day via cron/GitHub Actions.
  *
- * Requer no .env: PEXELS_KEY, e (VITE_SUPABASE_URL ou SUPABASE_URL) +
- * (SUPABASE_SERVICE_ROLE_KEY ou SUPABASE_SERVICE_ROLE).
+ * Assumes the schema migration (tema→category, text→quote,
+ * content_url→image_url, + pexels_id/image_author/aspect) has already run.
+ *
+ * Requires in .env (or the environment): PEXELS_KEY, and
+ * (VITE_SUPABASE_URL or SUPABASE_URL) + (SUPABASE_SERVICE_ROLE_KEY or
+ * SUPABASE_SERVICE_ROLE).
  */
 import dotenv from "dotenv";
 import path from "path";
@@ -25,11 +30,11 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!PEXELS_KEY) {
-  console.error("Falta PEXELS_KEY no .env");
+  console.error("Missing PEXELS_KEY in the environment.");
   process.exit(1);
 }
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error("Falta SUPABASE_URL/VITE_SUPABASE_URL ou SUPABASE_SERVICE_ROLE/SUPABASE_SERVICE_ROLE_KEY no .env");
+  console.error("Missing SUPABASE_URL/VITE_SUPABASE_URL or SUPABASE_SERVICE_ROLE/SUPABASE_SERVICE_ROLE_KEY in the environment.");
   process.exit(1);
 }
 
@@ -37,10 +42,23 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
-const PER_CATEGORY = 15; // 7 categorias × 15 ≈ 105 (~100 pedido)
+// Bounded daily batch: total doses inserted per run across ALL categories.
+const DAILY_BATCH_MIN = 15;
+const DAILY_BATCH_MAX = 30;
+const DAILY_BATCH_TARGET = (() => {
+  const fromEnv = parseInt(process.env.DAILY_BATCH_SIZE || "", 10);
+  if (Number.isFinite(fromEnv)) {
+    return Math.min(DAILY_BATCH_MAX, Math.max(DAILY_BATCH_MIN, fromEnv));
+  }
+  return DAILY_BATCH_MIN + Math.floor(Math.random() * (DAILY_BATCH_MAX - DAILY_BATCH_MIN + 1));
+})();
 
-// Termos de pesquisa por categoria — os nomes das categorias são abstratos,
-// isto dá à Pexels algo de fotográfico para procurar.
+// Low-stock guard thresholds (override via env if needed).
+const QUOTE_LOW_STOCK_THRESHOLD = parseInt(process.env.QUOTE_LOW_STOCK_THRESHOLD || "5", 10);
+const LIVE_DOSES_LOW_STOCK_THRESHOLD = parseInt(process.env.LIVE_DOSES_LOW_STOCK_THRESHOLD || "50", 10);
+
+// Search terms per category — category names are abstract, this gives
+// Pexels something photographic to search for.
 const CATEGORY_QUERIES = {
   ambition: ["mountain climber summit", "city skyline sunrise", "determined athlete"],
   discipline: ["early morning workout", "runner training discipline", "focused gym training"],
@@ -51,6 +69,8 @@ const CATEGORY_QUERIES = {
   mindset: ["meditation calm focus", "stoic silhouette mountain", "solitary reflection nature"],
 };
 
+const CATEGORIES = Object.keys(CATEGORY_QUERIES);
+
 function loadQuotes(category) {
   const file = path.join(QUOTES_DIR, `${category}.json`);
   return JSON.parse(readFileSync(file, "utf-8"));
@@ -59,7 +79,7 @@ function loadQuotes(category) {
 async function fetchExistingPexelsIds() {
   const { data, error } = await supabase.from("content_bank").select("pexels_id").not("pexels_id", "is", null);
   if (error) {
-    console.error("Erro a ler pexels_id existentes:", error.message);
+    console.error("Failed to read existing pexels_id values:", error.message);
     process.exit(1);
   }
   return new Set((data || []).map((r) => r.pexels_id));
@@ -68,10 +88,22 @@ async function fetchExistingPexelsIds() {
 async function fetchExistingQuotes(category) {
   const { data, error } = await supabase.from("content_bank").select("quote").eq("category", category);
   if (error) {
-    console.error(`Erro a ler quotes existentes de ${category}:`, error.message);
+    console.error(`Failed to read existing quotes for ${category}:`, error.message);
     process.exit(1);
   }
   return new Set((data || []).map((r) => r.quote));
+}
+
+async function countLiveDoses() {
+  const { count, error } = await supabase
+    .from("content_bank")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "live");
+  if (error) {
+    console.error("Failed to count live doses:", error.message);
+    return null;
+  }
+  return count;
 }
 
 async function searchPexels(query, page) {
@@ -86,89 +118,162 @@ async function searchPexels(query, page) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function seedCategory(category, usedPexelsIds) {
-  const allQuotes = loadQuotes(category);
-  const usedQuotes = await fetchExistingQuotes(category);
-  const availableQuotes = allQuotes.filter((q) => !usedQuotes.has(q));
-
+// One feeder per category: lazily pulls Pexels photo pages and pairs each
+// unused photo with the next unused quote, so the round-robin scheduler
+// below can pull "one dose at a time" from whichever categories still have
+// stock, instead of draining one category before moving to the next.
+function makeCategoryFeeder(category, usedPexelsIds, availableQuotes) {
   const queries = CATEGORY_QUERIES[category];
-  let inserted = 0;
-  let failed = 0;
+  let queryIdx = 0;
+  let page = 1;
+  let photoBuffer = [];
   let quoteIndex = 0;
+  let exhausted = availableQuotes.length === 0;
 
-  for (const query of queries) {
-    if (inserted >= PER_CATEGORY || quoteIndex >= availableQuotes.length) break;
-
-    for (let page = 1; page <= 3; page++) {
-      if (inserted >= PER_CATEGORY || quoteIndex >= availableQuotes.length) break;
-
+  async function fillBuffer() {
+    while (photoBuffer.length === 0 && !exhausted) {
+      if (queryIdx >= queries.length) {
+        exhausted = true;
+        return;
+      }
       let photos;
       try {
-        photos = await searchPexels(query, page);
+        photos = await searchPexels(queries[queryIdx], page);
       } catch (err) {
-        console.error(`  ✗ [${category}] pesquisa "${query}" p${page} falhou: ${err.message}`);
-        break;
+        console.error(`  x [${category}] search "${queries[queryIdx]}" p${page} failed: ${err.message}`);
+        queryIdx++;
+        page = 1;
+        continue;
       }
-      if (photos.length === 0) break;
+      await sleep(250); // Pexels rate-limit courtesy
 
-      for (const photo of photos) {
-        if (inserted >= PER_CATEGORY || quoteIndex >= availableQuotes.length) break;
-        if (usedPexelsIds.has(photo.id)) continue;
-
-        const quote = availableQuotes[quoteIndex];
-        const { error } = await supabase.from("content_bank").insert({
-          type: "image",
-          category,
-          quote,
-          image_url: photo.src.large2x,
-          image_author: photo.photographer,
-          pexels_id: photo.id,
-          aspect: "vertical",
-          status: "live",
-        });
-
-        if (error) {
-          console.error(`  ✗ [${category}] insert falhou (pexels_id ${photo.id}): ${error.message}`);
-          failed++;
-        } else {
-          console.log(`  ✓ [${category}] pexels_id ${photo.id} — "${quote.slice(0, 50)}..."`);
-          usedPexelsIds.add(photo.id);
-          inserted++;
-        }
-        quoteIndex++;
+      if (photos.length === 0 || page >= 3) {
+        queryIdx++;
+        page = 1;
+      } else {
+        page++;
       }
 
-      await sleep(250); // cortesia para o rate limit da Pexels
+      photoBuffer = photos.filter((p) => !usedPexelsIds.has(p.id));
     }
   }
 
-  return { inserted, failed, quotesAvailable: availableQuotes.length };
+  return {
+    category,
+    quotesRemaining: () => availableQuotes.length - quoteIndex,
+    isExhausted: () => exhausted,
+    async next() {
+      if (exhausted || quoteIndex >= availableQuotes.length) {
+        exhausted = true;
+        return null;
+      }
+      await fillBuffer();
+      if (photoBuffer.length === 0) {
+        exhausted = true;
+        return null;
+      }
+      const photo = photoBuffer.shift();
+      const quote = availableQuotes[quoteIndex];
+      quoteIndex++;
+      return { photo, quote };
+    },
+  };
 }
 
 async function run() {
   const usedPexelsIds = await fetchExistingPexelsIds();
-  console.log(`${usedPexelsIds.size} pexels_id já usados na BD.\n`);
+  console.log(`${usedPexelsIds.size} pexels_id already used in the DB.`);
+  console.log(`Target for this run: ${DAILY_BATCH_TARGET} doses (range ${DAILY_BATCH_MIN}-${DAILY_BATCH_MAX}).\n`);
 
-  const summary = [];
-  for (const category of Object.keys(CATEGORY_QUERIES)) {
-    console.log(`── ${category} ──`);
-    const result = await seedCategory(category, usedPexelsIds);
-    summary.push({ category, ...result });
-    console.log("");
+  const feeders = [];
+  const quotesRemainingAtStart = {};
+  for (const category of CATEGORIES) {
+    const allQuotes = loadQuotes(category);
+    const usedQuotes = await fetchExistingQuotes(category);
+    const availableQuotes = allQuotes.filter((q) => !usedQuotes.has(q));
+    quotesRemainingAtStart[category] = availableQuotes.length;
+    feeders.push(makeCategoryFeeder(category, usedPexelsIds, availableQuotes));
   }
 
-  console.log("─────────────────────────────────────────────");
+  const insertedByCategory = Object.fromEntries(CATEGORIES.map((c) => [c, 0]));
+  const failedByCategory = Object.fromEntries(CATEGORIES.map((c) => [c, 0]));
   let totalInserted = 0;
-  for (const s of summary) {
-    console.log(`  ${s.category.padEnd(18)} inserted: ${s.inserted}   failed: ${s.failed}   quotes disponíveis: ${s.quotesAvailable}`);
-    totalInserted += s.inserted;
+
+  outer: while (totalInserted < DAILY_BATCH_TARGET) {
+    let anyActive = false;
+
+    for (const feeder of feeders) {
+      if (totalInserted >= DAILY_BATCH_TARGET) break outer;
+      if (feeder.isExhausted()) continue;
+
+      const pick = await feeder.next();
+      if (!pick) continue;
+      anyActive = true;
+
+      const { photo, quote } = pick;
+      const { error } = await supabase.from("content_bank").insert({
+        type: "image",
+        category: feeder.category,
+        quote,
+        image_url: photo.src.large2x,
+        image_author: photo.photographer,
+        pexels_id: photo.id,
+        aspect: "vertical",
+        status: "live",
+      });
+
+      if (error) {
+        console.error(`  x [${feeder.category}] insert failed (pexels_id ${photo.id}): ${error.message}`);
+        failedByCategory[feeder.category]++;
+      } else {
+        console.log(`  + [${feeder.category}] pexels_id ${photo.id} - "${quote.slice(0, 50)}..."`);
+        usedPexelsIds.add(photo.id);
+        insertedByCategory[feeder.category]++;
+        totalInserted++;
+      }
+    }
+
+    if (!anyActive) break; // every category is exhausted, stop looping
+  }
+
+  console.log("\n─────────────────────────────────────────────");
+  for (const category of CATEGORIES) {
+    const remaining = quotesRemainingAtStart[category] - insertedByCategory[category];
+    console.log(
+      `  ${category.padEnd(18)} inserted: ${insertedByCategory[category]}   failed: ${failedByCategory[category]}   quotes remaining: ${remaining}`,
+    );
   }
   console.log("─────────────────────────────────────────────");
-  console.log(`  TOTAL inseridas: ${totalInserted}`);
-  console.log("─────────────────────────────────────────────");
+  console.log(`  TOTAL inserted: ${totalInserted} (target was ${DAILY_BATCH_TARGET})`);
+  console.log("─────────────────────────────────────────────\n");
+
+  // Low-stock guard — surfaced as WARNING lines so they're easy to grep in
+  // the GitHub Actions log / notifications.
+  let anyWarning = false;
+  for (const category of CATEGORIES) {
+    const remaining = quotesRemainingAtStart[category] - insertedByCategory[category];
+    if (remaining < QUOTE_LOW_STOCK_THRESHOLD) {
+      anyWarning = true;
+      console.warn(
+        `WARNING: category "${category}" has only ${remaining} unused quote(s) left (threshold ${QUOTE_LOW_STOCK_THRESHOLD}). Add more quotes to quotes/${category}.json.`,
+      );
+    }
+  }
+
+  const liveCount = await countLiveDoses();
+  if (liveCount !== null && liveCount < LIVE_DOSES_LOW_STOCK_THRESHOLD) {
+    anyWarning = true;
+    console.warn(
+      `WARNING: only ${liveCount} live dose(s) in content_bank (threshold ${LIVE_DOSES_LOW_STOCK_THRESHOLD}).`,
+    );
+  }
+
+  if (!anyWarning) {
+    console.log("Stock levels OK — no low-stock warnings.");
+  }
 }
 
 run().catch((e) => {
-  console.error("Erro inesperado:", e);
+  console.error("Unexpected error:", e);
   process.exit(1);
 });

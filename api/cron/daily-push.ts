@@ -38,31 +38,18 @@ export default async function handler(req: any, res: any) {
     vapidPrivateKey,
   );
 
-  // Escolhe uma dose aleatória: prefere type=quote, depois qualquer texto não-nulo
-  let doses;
-  const { data: quoteDoses } = await supabase
+  // Pick a random live dose (current schema: status='live', text lives in `quote`).
+  const { data: doses } = await supabase
     .from("content_bank")
-    .select("text, tema")
-    .eq("active", true)
-    .eq("type", "quote")
-    .not("text", "is", null)
-    .limit(20);
-  doses = quoteDoses;
+    .select("quote, category")
+    .eq("status", "live")
+    .not("quote", "is", null)
+    .limit(50);
 
-  if (!doses?.length) {
-    const { data: textDoses } = await supabase
-      .from("content_bank")
-      .select("text, tema")
-      .eq("active", true)
-      .not("text", "is", null)
-      .limit(20);
-    doses = textDoses;
-  }
-
-  let body = "O teu sonho aguarda. Hoje é o dia.";
+  let body = "Your dream is waiting. Today is the day.";
   if (doses?.length) {
     const dose = doses[Math.floor(Math.random() * doses.length)];
-    body = dose.text;
+    body = dose.quote;
   }
 
   const { data: subs, error: subErr } = await supabase
