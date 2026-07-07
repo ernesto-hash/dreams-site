@@ -85,6 +85,46 @@ async function fetchExistingPexelsIds() {
   return new Set((data || []).map((r) => r.pexels_id));
 }
 
+async function fetchExistingSlugs() {
+  const { data, error } = await supabase.from("content_bank").select("slug").not("slug", "is", null);
+  if (error) {
+    console.error("Failed to read existing slug values:", error.message);
+    process.exit(1);
+  }
+  return new Set((data || []).map((r) => r.slug));
+}
+
+// English kebab-case slug from category + quote, capped at 60 chars.
+// Mirrors the backfill logic in supabase_add_dose_slug.sql: on collision,
+// append a numeric suffix (-2, -3, ...), trimming the base so the total
+// still fits the length cap.
+const SLUG_MAX_LEN = 60;
+
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function makeSlug(category, quote, usedSlugs) {
+  let base = slugify(`${category} ${quote}`).slice(0, SLUG_MAX_LEN).replace(/-+$/g, "");
+  if (!base) base = "dose";
+
+  let candidate = base;
+  let n = 1;
+  while (usedSlugs.has(candidate)) {
+    n++;
+    const suffix = `-${n}`;
+    candidate = base.slice(0, SLUG_MAX_LEN - suffix.length) + suffix;
+  }
+  usedSlugs.add(candidate);
+  return candidate;
+}
+
 async function fetchExistingQuotes(category) {
   const { data, error } = await supabase.from("content_bank").select("quote").eq("category", category);
   if (error) {
@@ -182,6 +222,7 @@ function makeCategoryFeeder(category, usedPexelsIds, availableQuotes) {
 
 async function run() {
   const usedPexelsIds = await fetchExistingPexelsIds();
+  const usedSlugs = await fetchExistingSlugs();
   console.log(`${usedPexelsIds.size} pexels_id already used in the DB.`);
   console.log(`Target for this run: ${DAILY_BATCH_TARGET} doses (range ${DAILY_BATCH_MIN}-${DAILY_BATCH_MAX}).\n`);
 
@@ -211,10 +252,12 @@ async function run() {
       anyActive = true;
 
       const { photo, quote } = pick;
+      const slug = makeSlug(feeder.category, quote, usedSlugs);
       const { error } = await supabase.from("content_bank").insert({
         type: "image",
         category: feeder.category,
         quote,
+        slug,
         image_url: photo.src.large2x,
         image_author: photo.photographer,
         pexels_id: photo.id,
