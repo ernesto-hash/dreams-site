@@ -9,7 +9,7 @@
   "outputDirectory": "dist/spa",
 
   "functions": {
-    "api/dose/[slug].ts": {
+    "api/dose.ts": {
       "includeFiles": "dist/spa/index.html"
     }
   },
@@ -21,7 +21,7 @@
     },
     {
       "source": "/dose/:slug",
-      "destination": "/api/dose/:slug"
+      "destination": "/api/dose?slug=:slug"
     },
     {
       "source": "/(.*)",

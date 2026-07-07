@@ -1,8 +1,12 @@
 /**
- * Serverless-rendered HTML for /dose/:slug (via the /dose/:slug -> /api/dose/:slug
- * rewrite in vercel.json). Serves real, crawlable markup for every dose — including
- * ones inserted by scripts/feed-pexels.mjs seconds ago, since this looks the row up
- * in Supabase on every request instead of relying on a build-time snapshot.
+ * Serverless-rendered HTML for /dose/:slug (via the /dose/:slug -> /api/dose?slug=:slug
+ * rewrite in vercel.json). A static filename on purpose — Vercel's zero-config "vite"
+ * preset didn't register api/dose/[slug].ts as a routable function in production, so
+ * the slug travels as a query param instead of a bracket path segment.
+ *
+ * Serves real, crawlable markup for every dose — including ones inserted by
+ * scripts/feed-pexels.mjs seconds ago, since this looks the row up in Supabase on
+ * every request instead of relying on a build-time snapshot.
  *
  * Real browsers get this same HTML first, then the normal client bundle boots on
  * top of it (see client/main.tsx's `data-ssr="light"` check) and takes over with
