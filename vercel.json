@@ -8,10 +8,20 @@
 
   "outputDirectory": "dist/spa",
 
+  "functions": {
+    "api/dose/[slug].ts": {
+      "includeFiles": "dist/spa/index.html"
+    }
+  },
+
   "rewrites": [
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
+    },
+    {
+      "source": "/dose/:slug",
+      "destination": "/api/dose/:slug"
     },
     {
       "source": "/(.*)",

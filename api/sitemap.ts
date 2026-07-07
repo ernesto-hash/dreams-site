@@ -12,6 +12,14 @@ export default async function handler(req: any, res: any) {
     .order("created_at", { ascending: false })
     .limit(10000);
 
+  const { data: doses } = await supabase
+    .from("content_bank")
+    .select("slug, created_at")
+    .eq("status", "live")
+    .not("slug", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(10000);
+
   const staticPages = [
     { url: "/", priority: "1.0", changefreq: "daily" },
     { url: "/gallery", priority: "0.9", changefreq: "daily" },
@@ -54,6 +62,16 @@ export default async function handler(req: any, res: any) {
     <lastmod>${dream.created_at?.split("T")[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>`;
+  });
+
+  doses?.forEach(dose => {
+    xml += `
+  <url>
+    <loc>https://monumentofdreams.com/dose/${dose.slug}</loc>
+    <lastmod>${dose.created_at?.split("T")[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>`;
   });
 

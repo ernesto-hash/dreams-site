@@ -4,7 +4,12 @@ import App from "./App";
 
 const rootElement = document.getElementById("root")!;
 
-if (rootElement.hasChildNodes()) {
+// api/dose/[slug].ts serves a hand-written HTML snapshot for crawlers/link
+// previews that doesn't match the React tree — marked with data-ssr="light"
+// so we do a clean client render here instead of hydrating mismatched markup.
+const isLightSnapshot = rootElement.dataset.ssr === "light";
+
+if (rootElement.hasChildNodes() && !isLightSnapshot) {
   hydrateRoot(
     rootElement,
     <React.StrictMode>
@@ -12,6 +17,7 @@ if (rootElement.hasChildNodes()) {
     </React.StrictMode>
   );
 } else {
+  if (isLightSnapshot) rootElement.innerHTML = "";
   createRoot(rootElement).render(
     <React.StrictMode>
       <App />
