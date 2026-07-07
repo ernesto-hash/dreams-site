@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import { TRANSITION_FAST } from "@/lib/motion";
 
 function getErrorMessage(field: string, value: string, password?: string): string {
   switch (field) {
@@ -33,6 +36,8 @@ function getErrorMessage(field: string, value: string, password?: string): strin
   }
 }
 
+type FieldName = "username" | "country" | "email" | "password" | "confirmPassword";
+
 export default function Register() {
   const navigate = useNavigate();
   const { refreshProfile } = useAuth();
@@ -42,9 +47,24 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [country, setCountry] = useState("");
+  const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [shakeKey, setShakeKey] = useState(0);
   const [checkEmail, setCheckEmail] = useState(false);
+
+  const values: Record<FieldName, string> = {
+    username,
+    country,
+    email,
+    password,
+    confirmPassword,
+  };
+
+  const fieldError = (field: FieldName) =>
+    touched[field] ? getErrorMessage(field, values[field], password) : "";
+
+  const markTouched = (field: FieldName) => setTouched((t) => ({ ...t, [field]: true }));
 
   const validate = (): string => {
     const emailErr = getErrorMessage("email", email);
@@ -63,10 +83,12 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setTouched({ username: true, country: true, email: true, password: true, confirmPassword: true });
 
     const validationError = validate();
     if (validationError) {
       setError(validationError);
+      setShakeKey((k) => k + 1);
       return;
     }
 
@@ -86,11 +108,13 @@ export default function Register() {
 
       if (signUpError) {
         setError(signUpError.message);
+        setShakeKey((k) => k + 1);
         return;
       }
 
       if (!data.user) {
         setError("Could not create your account. Please try again.");
+        setShakeKey((k) => k + 1);
         return;
       }
 
@@ -106,10 +130,16 @@ export default function Register() {
     } catch (err: any) {
       console.error("Register error:", err);
       setError("An unexpected error occurred. Please try again.");
+      setShakeKey((k) => k + 1);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const fieldClass = (field: FieldName) =>
+    `input-dark w-full p-4 rounded-lg transition-colors ${
+      fieldError(field) ? "border-red-500/60 focus:border-red-500" : ""
+    }`;
 
   return (
     <div className="min-h-screen bg-gradient-dark">
@@ -143,7 +173,7 @@ export default function Register() {
               </Link>
             </div>
           ) : (
-          <form onSubmit={handleSubmit} className="card-dark p-8 rounded-xl space-y-6">
+          <form onSubmit={handleSubmit} noValidate className="card-dark p-8 rounded-xl space-y-6">
             <div>
               <label className="block text-sm text-neon-secondary mb-2">
                 Username
@@ -151,11 +181,15 @@ export default function Register() {
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                onBlur={() => markTouched("username")}
                 disabled={isSubmitting}
-                className="input-dark w-full p-4 rounded-lg"
+                className={fieldClass("username")}
                 placeholder="How should we call you?"
                 required
               />
+              {fieldError("username") && (
+                <p className="mt-1.5 text-xs text-red-400">{fieldError("username")}</p>
+              )}
             </div>
 
             <div>
@@ -165,11 +199,15 @@ export default function Register() {
               <input
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
+                onBlur={() => markTouched("country")}
                 disabled={isSubmitting}
-                className="input-dark w-full p-4 rounded-lg"
+                className={fieldClass("country")}
                 placeholder="Where are you dreaming from?"
                 required
               />
+              {fieldError("country") && (
+                <p className="mt-1.5 text-xs text-red-400">{fieldError("country")}</p>
+              )}
             </div>
 
             <div>
@@ -180,11 +218,15 @@ export default function Register() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => markTouched("email")}
                 disabled={isSubmitting}
-                className="input-dark w-full p-4 rounded-lg"
+                className={fieldClass("email")}
                 placeholder="you@example.com"
                 required
               />
+              {fieldError("email") && (
+                <p className="mt-1.5 text-xs text-red-400">{fieldError("email")}</p>
+              )}
             </div>
 
             <div>
@@ -195,11 +237,15 @@ export default function Register() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => markTouched("password")}
                 disabled={isSubmitting}
-                className="input-dark w-full p-4 rounded-lg"
+                className={fieldClass("password")}
                 placeholder="At least 6 characters"
                 required
               />
+              {fieldError("password") && (
+                <p className="mt-1.5 text-xs text-red-400">{fieldError("password")}</p>
+              )}
             </div>
 
             <div>
@@ -210,30 +256,53 @@ export default function Register() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={() => markTouched("confirmPassword")}
                 disabled={isSubmitting}
-                className="input-dark w-full p-4 rounded-lg"
+                className={fieldClass("confirmPassword")}
                 placeholder="Repeat your password"
                 required
               />
+              {fieldError("confirmPassword") && (
+                <p className="mt-1.5 text-xs text-red-400">{fieldError("confirmPassword")}</p>
+              )}
             </div>
 
-            {error && (
-              <div className="p-4 border border-red-500/40 bg-red-900/20 rounded-lg text-red-300 text-sm">
-                {error}
-              </div>
-            )}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  key={shakeKey}
+                  initial={{ opacity: 0, x: 0 }}
+                  animate={{ opacity: 1, x: [0, -8, 8, -6, 6, 0] }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="p-4 border border-red-500/40 bg-red-900/20 rounded-lg text-red-300 text-sm"
+                >
+                  {error}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            <button
+            <motion.button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-4 font-bold rounded-lg transition-all ${
+              whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+              whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+              transition={TRANSITION_FAST}
+              className={`w-full py-4 font-bold rounded-lg flex items-center justify-center gap-2 ${
                 isSubmitting
                   ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "neon-button hover:shadow-glow-neon hover:scale-[1.02] active:scale-[0.98]"
+                  : "neon-button hover:shadow-glow-neon"
               }`}
             >
-              {isSubmitting ? "Creating account..." : "Create Account"}
-            </button>
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </motion.button>
 
             <p className="text-center text-sm text-neon-secondary/70">
               Already have an account?{" "}

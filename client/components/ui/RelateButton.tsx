@@ -1,11 +1,14 @@
+import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { TRANSITION_FAST } from "@/lib/motion";
 
 type Props = {
   dreamId: string;
 };
 
 export default function RelateButton({ dreamId }: Props) {
-  const handleRelate = async () => {
+  const handleRelate = async (e: React.MouseEvent) => {
+    e.preventDefault();
     let session = localStorage.getItem("session_id");
 
     if (!session) {
@@ -20,11 +23,14 @@ export default function RelateButton({ dreamId }: Props) {
   };
 
   return (
-    <button
+    <motion.button
       onClick={handleRelate}
-      className="mt-3 px-4 py-2 border border-neon-primary/40 rounded-lg"
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.94 }}
+      transition={TRANSITION_FAST}
+      className="mt-3 px-4 py-2 border border-neon-primary/40 rounded-lg hover:border-neon-primary hover:text-neon-primary transition-colors"
     >
       ⭐ I Relate to This
-    </button>
+    </motion.button>
   );
 }

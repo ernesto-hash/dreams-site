@@ -84,6 +84,10 @@ export default {
             opacity: "0",
           },
         },
+        "shimmer": {
+          "0%": { backgroundPosition: "-400px 0" },
+          "100%": { backgroundPosition: "400px 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -93,6 +97,7 @@ export default {
         "scale-in": "scale-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
         "fade-in": "fade-in 0.6s ease-out",
         "particle": "particle 2s ease-out forwards",
+        "shimmer": "shimmer 1.6s ease-in-out infinite",
       },
       boxShadow: {
         "glow-neon": "0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3)",

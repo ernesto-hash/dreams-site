@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Share2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import ShareableCard, { type ShareItem } from "@/components/ShareableCard";
+import { staggerDelay } from "@/lib/motion";
 
 const PAGE_SIZE = 10;
 
@@ -99,16 +101,28 @@ export function FeedRow({ category, label }: FeedRowProps) {
         ref={scrollRef}
         className="flex gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory px-4 pb-2"
       >
-        {items.map((item) => (
-          <article
+        {items.length === 0 && loading
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[75vw] max-w-[320px] h-[480px] rounded-2xl overflow-hidden skeleton-shimmer border border-neon-primary/10 snap-start"
+              />
+            ))
+          : items.map((item, i) => (
+          <motion.article
             key={item.id}
-            className="relative flex-shrink-0 w-[75vw] max-w-[320px] h-[480px] rounded-2xl overflow-hidden bg-black border border-neon-primary/20 snap-start shadow-lg flex flex-col justify-end"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: staggerDelay(i), ease: "easeOut" }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative flex-shrink-0 w-[75vw] max-w-[320px] h-[480px] rounded-2xl overflow-hidden bg-black border border-neon-primary/20 snap-start shadow-lg flex flex-col justify-end transition-shadow duration-300 hover:shadow-glow-neon-sm"
           >
             {item.image_url ? (
               <img
                 src={item.image_url}
                 alt={item.category || "dream"}
-                className="absolute inset-0 w-full h-full object-cover opacity-55"
+                className="absolute inset-0 w-full h-full object-cover opacity-55 transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
               />
             ) : (
@@ -136,13 +150,16 @@ export function FeedRow({ category, label }: FeedRowProps) {
             )}
 
             {/* share button */}
-            <button
+            <motion.button
               onClick={(e) => { e.stopPropagation(); setSharingItem(item); }}
               aria-label="Share"
-              className="absolute bottom-4 right-4 z-20 w-8 h-8 rounded-full bg-black/55 border border-neon-primary/25 flex items-center justify-center text-neon-secondary/45 hover:text-neon-primary hover:border-neon-primary/60 transition-all"
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.85 }}
+              transition={{ duration: 0.15 }}
+              className="absolute bottom-4 right-4 z-20 w-8 h-8 rounded-full bg-black/55 border border-neon-primary/25 flex items-center justify-center text-neon-secondary/45 hover:text-neon-primary hover:border-neon-primary/60 transition-colors"
             >
               <Share2 size={13} />
-            </button>
+            </motion.button>
 
             <div className="relative z-10 p-4 pb-5">
               {item.category && (
@@ -163,10 +180,10 @@ export function FeedRow({ category, label }: FeedRowProps) {
                 })}
               </p>
             </div>
-          </article>
+          </motion.article>
         ))}
 
-        {loading && (
+        {loading && items.length > 0 && (
           <div className="flex-shrink-0 w-14 flex items-center justify-center">
             <div className="w-5 h-5 rounded-full border-2 border-neon-primary/30 border-t-neon-primary animate-spin" />
           </div>

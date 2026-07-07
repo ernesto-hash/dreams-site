@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 import { supabase } from "@/lib/supabase";
-import FeedCard, { FeedDream } from "@/components/ui/FeedCard";
+import FeedCard, { FeedCardSkeleton, FeedDream } from "@/components/ui/FeedCard";
 
 const PAGE_SIZE = 15;
 
@@ -81,12 +81,14 @@ export default function Feed() {
           </h1>
 
           <div className="flex flex-col gap-6">
-            {dreams.map((dream) => (
-              <FeedCard key={dream.id} dream={dream} />
-            ))}
+            {dreams.length === 0 && loading
+              ? Array.from({ length: 4 }).map((_, i) => <FeedCardSkeleton key={i} />)
+              : dreams.map((dream, i) => (
+                  <FeedCard key={dream.id} dream={dream} index={i % PAGE_SIZE} />
+                ))}
           </div>
 
-          {loading && (
+          {loading && dreams.length > 0 && (
             <div className="flex justify-center py-8">
               <div className="w-6 h-6 rounded-full border-2 border-neon-primary/30 border-t-neon-primary animate-spin" />
             </div>

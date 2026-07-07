@@ -4,9 +4,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { lazy, Suspense } from "react";
+import { AnimatePresence, MotionConfig } from "framer-motion";
 
 import { useLiveSystem } from "@/hooks/live/useLiveSystem";
 import { AudioProvider } from "@/context/AudioContext";
@@ -14,6 +15,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import AmbientPlayer from "@/components/AmbientPlayer";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import BottomNav from "@/components/BottomNav";
+import PageTransition from "@/components/PageTransition";
 
 const Index = lazy(() => import("./pages/Index"));
 const Gallery = lazy(() => import("./pages/Gallery"));
@@ -39,6 +41,38 @@ const CuradoriaAdmin = lazy(() => import("./pages/CuradoriaAdmin"));
 
 const queryClient = new QueryClient();
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
+        <Route path="/submit" element={<PageTransition><SubmitWish /></PageTransition>} />
+        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+        <Route path="/success" element={<PageTransition><Success /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+        <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
+        <Route path="/support" element={<PageTransition><Support /></PageTransition>} />
+        <Route path="/dream/:id" element={<PageTransition><DreamPage /></PageTransition>} />
+        <Route path="/dreams-about-dreams" element={<PageTransition><DreamsAboutDreams /></PageTransition>} />
+        <Route path="/dreams-that-come-true" element={<PageTransition><DreamsThatComeTrue /></PageTransition>} />
+        <Route path="/dreams/:category" element={<PageTransition><CategoryPage /></PageTransition>} />
+        <Route path="/dream-meanings" element={<PageTransition><DreamMeanings /></PageTransition>} />
+        <Route path="/feed" element={<PageTransition><Feed /></PageTransition>} />
+        <Route path="/descobrir" element={<PageTransition><Discover /></PageTransition>} />
+        <Route path="/admin/curadoria" element={<PageTransition><CuradoriaAdmin /></PageTransition>} />
+        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+        <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   useLiveSystem();
 
@@ -51,36 +85,16 @@ function App() {
 
           <AuthProvider>
           <AudioProvider>
+          <MotionConfig reducedMotion="user">
           <BrowserRouter>
             <AnimatedBackground />
             <AmbientPlayer />
             <BottomNav />
             <Suspense fallback={null}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/gallery" element={<Gallery />} />
-                <Route path="/submit" element={<SubmitWish />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/success" element={<Success />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/support" element={<Support />} />
-                <Route path="/dream/:id" element={<DreamPage />} />
-                <Route path="/dreams-about-dreams" element={<DreamsAboutDreams />} />
-                <Route path="/dreams-that-come-true" element={<DreamsThatComeTrue />} />
-                <Route path="/dreams/:category" element={<CategoryPage />} />
-                <Route path="/dream-meanings" element={<DreamMeanings />} />
-                <Route path="/feed" element={<Feed />} />
-                <Route path="/descobrir" element={<Discover />} />
-                <Route path="/admin/curadoria" element={<CuradoriaAdmin />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <AnimatedRoutes />
             </Suspense>
           </BrowserRouter>
+          </MotionConfig>
           </AudioProvider>
           </AuthProvider>
         </TooltipProvider>

@@ -1,8 +1,29 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import PremiumSeal from "@/components/ui/PremiumSeal";
+import { TRANSITION_FAST } from "@/lib/motion";
+
+function NavLink({ to, active, children }: { to: string; active: boolean; children: React.ReactNode }) {
+  return (
+    <Link to={to} className="group relative font-exo2 py-1">
+      <span className={active ? "text-neon-primary" : "text-neon-secondary transition-colors group-hover:text-neon-primary"}>
+        {children}
+      </span>
+      {active ? (
+        <motion.span
+          layoutId="nav-underline"
+          className="absolute left-0 -bottom-0.5 h-px w-full bg-neon-primary"
+          transition={TRANSITION_FAST}
+        />
+      ) : (
+        <span className="absolute left-0 -bottom-0.5 h-px w-full bg-neon-primary/60 scale-x-0 origin-center transition-transform duration-200 group-hover:scale-x-100" />
+      )}
+    </Link>
+  );
+}
 
 export default function Header() {
   const location = useLocation();
@@ -12,10 +33,16 @@ export default function Header() {
   const [open, setOpen] = useState(false); // dropdown desktop
   const [mobileMenu, setMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    await signOut();
-    navigate("/");
+    setLoggingOut(true);
+    try {
+      await signOut();
+      navigate("/");
+    } finally {
+      setLoggingOut(false);
+    }
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -37,10 +64,10 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 backdrop-blur-sm border-b border-neon-primary/10 transition-all duration-300 ${
+      className={`fixed top-0 w-full z-50 border-b transition-all duration-300 ${
         scrolled
-          ? "bg-dark-bg/95 py-2"
-          : "bg-gradient-to-b from-dark-bg/95 to-dark-bg/50 py-4"
+          ? "bg-dark-bg/80 backdrop-blur-xl border-neon-primary/15 py-2 shadow-[0_1px_20px_rgba(0,0,0,0.3)]"
+          : "bg-transparent border-transparent py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
@@ -59,38 +86,9 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden sm:flex items-center gap-8 relative">
-          <Link
-            to="/gallery"
-            className={`font-exo2 transition-all ${
-              isActive("/gallery")
-                ? "text-neon-primary"
-                : "text-neon-secondary hover:text-neon-primary"
-            }`}
-          >
-            Gallery
-          </Link>
-
-          <Link
-            to="/feed"
-            className={`font-exo2 transition-all ${
-              isActive("/feed")
-                ? "text-neon-primary"
-                : "text-neon-secondary hover:text-neon-primary"
-            }`}
-          >
-            Feed
-          </Link>
-
-          <Link
-            to="/submit"
-            className={`font-exo2 transition-all ${
-              isActive("/submit")
-                ? "text-neon-primary"
-                : "text-neon-secondary hover:text-neon-primary"
-            }`}
-          >
-            Submit Dream
-          </Link>
+          <NavLink to="/gallery" active={isActive("/gallery")}>Gallery</NavLink>
+          <NavLink to="/feed" active={isActive("/feed")}>Feed</NavLink>
+          <NavLink to="/submit" active={isActive("/submit")}>Submit Dream</NavLink>
 
           {/* Dropdown */}
           <div
@@ -135,32 +133,41 @@ export default function Header() {
             </AnimatePresence>
           </div>
 
-          {user ? (
-            <div className="flex items-center gap-4">
-              <span className="font-exo2 text-neon-secondary text-sm flex items-center gap-2">
-                {profile?.username || "Account"}
-                <PremiumSeal active={profile?.is_premium} />
-              </span>
-              <button
-                onClick={handleLogout}
-                className="font-exo2 text-neon-secondary hover:text-neon-primary transition-all"
+          <AnimatePresence mode="wait" initial={false}>
+            {user ? (
+              <motion.div
+                key="user"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={TRANSITION_FAST}
+                className="flex items-center gap-4"
               >
-                Log Out
-              </button>
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className={`font-exo2 transition-all ${
-                isActive("/login")
-                  ? "text-neon-primary"
-                  : "text-neon-secondary hover:text-neon-primary"
-              }`}
-            >
-              Login
-            </Link>
-          )}
-
+                <span className="font-exo2 text-neon-secondary text-sm flex items-center gap-2">
+                  {profile?.username || "Account"}
+                  <PremiumSeal active={profile?.is_premium} />
+                </span>
+                <button
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  className="font-exo2 text-neon-secondary hover:text-neon-primary transition-all flex items-center gap-1.5 disabled:opacity-60"
+                >
+                  {loggingOut && <Loader2 size={13} className="animate-spin" />}
+                  {loggingOut ? "Logging out..." : "Log Out"}
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="guest"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={TRANSITION_FAST}
+              >
+                <NavLink to="/login" active={isActive("/login")}>Login</NavLink>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </nav>
 
         {/* Mobile Hamburger (SVG animado) */}
@@ -252,9 +259,11 @@ export default function Header() {
               {user ? (
                 <button
                   onClick={handleLogout}
-                  className="text-neon-secondary hover:text-neon-primary text-left flex items-center gap-2"
+                  disabled={loggingOut}
+                  className="text-neon-secondary hover:text-neon-primary text-left flex items-center gap-2 disabled:opacity-60"
                 >
-                  Log Out ({profile?.username || "Account"})
+                  {loggingOut && <Loader2 size={14} className="animate-spin" />}
+                  {loggingOut ? "Logging out..." : `Log Out (${profile?.username || "Account"})`}
                   <PremiumSeal active={profile?.is_premium} />
                 </button>
               ) : (
